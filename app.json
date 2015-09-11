@@ -1,0 +1,9 @@
+{
+  "env": {
+    "IS_HEROKU_SERVER": "1",
+    "WEB_CONCURRENCY": "1"
+  },
+  "addons": [
+    "papertrail"
+  ]
+}
