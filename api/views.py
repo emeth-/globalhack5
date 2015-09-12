@@ -11,6 +11,11 @@ def json_custom_parser(obj):
     else:
         raise TypeError(obj)
 
+def welcome(request):
+    return HttpResponse(json.dumps({
+            "message": "Welcome to the St. Louis Regional Municipal Court System Helpline! Please enter your citation number or driver's license number."
+        }, default=json_custom_parser), content_type='application/json', status=200)
+
 def get_info(request):
 
     if request.GET.get('citation', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
