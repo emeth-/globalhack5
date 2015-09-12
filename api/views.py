@@ -106,7 +106,7 @@ def contact_received(request):
                 return HttpResponse(twil, content_type='application/xml', status=200)
     
             else:
-                request.session['dob'] = sms_from_user
+                request.session['last_name'] = sms_from_user
             
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
@@ -117,6 +117,18 @@ def contact_received(request):
                 ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
                 twil = twil.replace("{ticket_info}", ticket_info)
                 return HttpResponse(twil, content_type='application/xml', status=200)
+            
+        else:
+            twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                    <Response>
+                        <Message method="GET">Thank you, that matches our records. Here is your ticket info!</Message>
+                        <Message method="GET">{ticket_info}</Message>
+                    </Response>
+                    '''
+            ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
+            twil = twil.replace("{ticket_info}", ticket_info)
+            return HttpResponse(twil, content_type='application/xml', status=200)
+            
     except:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         print exc_value.message
