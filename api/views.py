@@ -1,7 +1,8 @@
 from django.http import HttpResponse
 import datetime
 import json
-#from api.models import Fish
+from api.models import Citation, Violation
+from dateutil import parser
 
 def json_custom_parser(obj):
     if isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date):
@@ -9,43 +10,50 @@ def json_custom_parser(obj):
         return obj.isoformat()[:dot_ix]
     else:
         raise TypeError(obj)
-'''
-def delete_fish(request):
-    """
-        Expects as input:
-            - An id located in:
-                - request.body if Angular.js
-                - request.POST['id'] if backbone / jquery
-    """
-    fish_id = request.body #change this depending on how your frontend sends data, as POST or in the body
 
-    Fish.objects.filter(id=fish_id).delete()
+def welcome(request):
     return HttpResponse(json.dumps({
-        "status": "success"
-    }, default=json_custom_parser), content_type='application/json', status=200)
+            "message": "Welcome to the St. Louis Regional Municipal Court System Helpline! Please enter your citation number or driver's license number."
+        }, default=json_custom_parser), content_type='application/json', status=200)
 
-def save_fish(request):
-    """
-        Expects as input:
-            - A json string location in:
-                - request.body if Angular.js
-                - request.POST['fish_info'] if backbone / jquery
-    """
+def get_info(request):
 
-    fish_info = request.body #change this depending on how your frontend sends data, as POST or in the body
+    if request.GET.get('citation', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
 
-    fsh = Fish(**json.loads(fish_info))
-    fsh.save()
-    return HttpResponse(json.dumps({
-        "status": "success",
-        "id": fsh.id,
-        "data": list(Fish.objects.filter(id=fsh.id).values())[0] #lololol
-    }, default=json_custom_parser), content_type='application/json', status=200)
+        citation_in_db = Citation.objects.filter(citation_number=request.GET['citation']).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
 
-def get_fish(request):
-    fishies = Fish.objects.all()
-    return HttpResponse(json.dumps({
-        "status": "success",
-        "data": list(fishies.values())
-    }, default=json_custom_parser), content_type='application/json', status=200)
-'''
+    elif request.GET.get('drivers_license_number', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
+
+        citation_in_db = Citation.objects.filter(drivers_license_number=request.GET['drivers_license_number']).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
+
+    else:
+        
+        return HttpResponse(json.dumps({
+            "status": "error",
+            "message": "Not enough information to authenticate user. Please pass in Date of Birth, Last Name, AND either driver's license number or citation number."
+        }, default=json_custom_parser), content_type='application/json', status=200)
+
+
+
+    if citation_in_db.exists():
+        violation_in_db = Violation.objects.filter(citation_number=request.GET['citation'])
+        return HttpResponse(json.dumps({
+            "status": "success",
+            "citation": list(citation_in_db.values())[0],
+            "violation": list(violation_in_db.values())[0]
+        }, default=json_custom_parser), content_type='application/json', status=200)
+    else:
+        #return error, not found
+        return HttpResponse(json.dumps({
+            "status": "error",
+            "message": "Citation not found in database."
+        }, default=json_custom_parser), content_type='application/json', status=200)
+
+
+
+
+
+
+
+
+
