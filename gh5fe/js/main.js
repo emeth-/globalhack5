@@ -9,6 +9,9 @@ $body.on('click', '.citation-no', function () {
     $('.main-content').html(mainContent({yesOrNo: false}));
 });
 $body.on('click', '.submit-form', function () {
+
+    $('.server-error').remove();
+
     var citationNumber = $('.citation-number').val(),
         driversLicense = $('.drivers-license').val(),
         lastName = $('.last-name').val(),
@@ -25,11 +28,14 @@ $body.on('click', '.submit-form', function () {
         },
         success: function (response, status, xhr) {
             if (response.status === 'error') {
-                //
                 var mainContent = _.template($('#no-citations').html());
                 $('.main-content').prepend(mainContent({message: response.message}));
             } else if (response.status === 'success') {
+                var data = response.citation;
+                data.violations = [response.violation];
 
+                var content = _.template($('#list-citations').html());
+                $('.main-content').html(content({citations: [data]}));
             }
         },
         error: function () {

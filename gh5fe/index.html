@@ -41,6 +41,20 @@
     </div>
 </div><!-- /.container -->
 
+<script type="foo/bar" id='list-citations'>
+
+    <ul class="list-group">
+        <% _.each(citations, function(citation) { %>
+            <li class="list-group-item">
+                <p><strong>Citation #: </strong><%= citation.citation_number %></p>
+                <p><strong>Citation Date: </strong><%= citation.citation_date %></p>
+                
+
+            </li>
+        <% }); %>
+    </ul>
+</script>
+
 <script type="foo/bar" id='yes-form'>
     <div class="form">
         <% if (yesOrNo) { %>
