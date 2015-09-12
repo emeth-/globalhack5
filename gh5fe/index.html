@@ -46,9 +46,21 @@
     <ul class="list-group">
         <% _.each(citations, function(citation) { %>
             <li class="list-group-item">
+                <h5 class="text-danger">VIOLATIONS</h5>
+                <ol>
+                <% _.each(citation.violations, function(violation) { %>
+                    <li>
+                        <p><strong>Violation: </strong><%= violation.violation_description %></p>
+                        <% if (violation.warrant_status) { %><p class="text-danger bg-warning warrant-warning">THERE IS A WARRANT FOR THIS VIOLATION</p><% } %>
+                        <p><strong>Violation Amount: </strong><span class="pull-right">$<%= violation.fine_amount %></span></p>
+                        <p><strong>Court Cost: </strong><span class="pull-right">$<%= violation.court_cost %></span></p>
+                        <p><strong>Total Cost: </strong><strong class="pull-right">$<%= +violation.fine_amount + +violation.court_cost %></strong></p>
+                    </li>
+                <% }); %>
+                </ol>
                 <p><strong>Citation #: </strong><%= citation.citation_number %></p>
                 <p><strong>Citation Date: </strong><%= citation.citation_date %></p>
-                
+
 
             </li>
         <% }); %>
