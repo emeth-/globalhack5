@@ -48,10 +48,12 @@ def contact_received(request):
     
                 else:
                     request.session['citation_number'] = citation_in_db[0].citation_number
-                    return HttpResponse(json.dumps({
-                        "status": "success",
-                        "message": "Your Citation Number has been confirmed. Please send your date of birth."
-                    }, default=json_custom_parser), content_type='application/json', status=200)
+                    twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                            <Response>
+                                <Message method="GET">Your Citation Number has been confirmed. Please send your date of birth.</Message>
+                            </Response>
+                            '''
+                    return HttpResponse(twil, content_type='application/xml', status=200)
     
         elif 'dob' not in request.session:
             sms_from_user = request.POST['Body']
