@@ -41,6 +41,20 @@
     </div>
 </div><!-- /.container -->
 
+<script type="foo/bar" id='list-citations'>
+
+    <ul class="list-group">
+        <% _.each(citations, function(citation) { %>
+            <li class="list-group-item">
+                <p><strong>Citation #: </strong><%= citation.citation_number %></p>
+                <p><strong>Citation Date: </strong><%= citation.citation_date %></p>
+                
+
+            </li>
+        <% }); %>
+    </ul>
+</script>
+
 <script type="foo/bar" id='yes-form'>
     <div class="form">
         <% if (yesOrNo) { %>
@@ -50,11 +64,17 @@
 
         <label for="">Driver's License #</label>
         <input type="text" class="drivers-license form-control"/>
-        <label for="">Name</label>
-        <input type="text" class="name form-control"/>
+        <label for="">Last Name</label>
+        <input type="text" class="last-name form-control"/>
         <label for="">Date Of Birth</label>
         <input type="text" class="date-of-birth form-control"/>
         <button class="btn btn-success btn-lg btn-block submit-form">SUBMIT</button>
+    </div>
+</script>
+
+<script type="foo/bar" id='no-citations'>
+    <div class="bg-info server-error">
+        <%= message %>
     </div>
 </script>
 
