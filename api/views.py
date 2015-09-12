@@ -4,6 +4,7 @@ import json
 from api.models import Citation, Violation
 from dateutil import parser
 from django.db.models import Q
+import sys
 
 def json_custom_parser(obj):
     if isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date):
@@ -58,7 +59,18 @@ def contact_received(request):
         elif 'dob' not in request.session:
             sms_from_user = request.POST['Body']
     
-            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(sms_from_user))
+            try:
+                citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(sms_from_user))
+            except:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Message method="GET">Error: {error_message}. Please try again.</Message>
+                        </Response>
+                        '''
+                twil = twil.replace("{error_message}", exc_value.message)
+                return HttpResponse(twil, content_type='application/xml', status=200)
+                
     
             if not citation_in_db.exists():
     
@@ -94,7 +106,7 @@ def contact_received(request):
                 return HttpResponse(twil, content_type='application/xml', status=200)
     
             else:
-                request.session['dob'] = sms_from_user
+                request.session['last_name'] = sms_from_user
             
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
@@ -103,10 +115,21 @@ def contact_received(request):
                         </Response>
                         '''
                 ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
-                twil.replace("{ticket_info}", ticket_info)
+                twil = twil.replace("{ticket_info}", ticket_info)
                 return HttpResponse(twil, content_type='application/xml', status=200)
+            
+        else:
+            twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                    <Response>
+                        <Message method="GET">Thank you, that matches our records. Here is your ticket info!</Message>
+                        <Message method="GET">{ticket_info}</Message>
+                    </Response>
+                    '''
+            ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
+            twil = twil.replace("{ticket_info}", ticket_info)
+            return HttpResponse(twil, content_type='application/xml', status=200)
+            
     except:
-        import sys
         exc_type, exc_value, exc_traceback = sys.exc_info()
         print exc_value.message
 
