@@ -43,33 +43,35 @@
 
 <script type="foo/bar" id='list-citations'>
 
-    <ul class="list-group">
+        <% if (_.filter(_.map(_.map(citations, function (c) { return c.violations }), function (va) {return va[0]}), function (v) {return v.warrant_status;}).length) { %>
+            <div class="warrant-warning scary">THERE IS A WARRANT OUT FOR YOUR ARREST!</div>
+            <div class="push"></div>
+        <% } %>
         <% _.each(citations, function(citation) { %>
-            <li class="list-group-item">
+            <div class="citation">
                 <p><strong><span class="blue">Citation #: </span></strong><%= citation.citation_number %></p>
                 <p><strong><span class="blue">Citation Date: </span></strong><%= citation.citation_date %></p>
                 <p><strong>User Name: </strong><%= citation.first_name + ' ' + citation.last_name %></p>
                 <p><strong>DOB: </strong><%= citation.date_of_birth %></p>
                 <p><strong>Driver's License: </strong><%= citation.drivers_license_number %></p>
 
-                <h5 class="text-danger">VIOLATIONS</h5>
+                <h5 class="text-scary">VIOLATIONS</h5>
                 <ol>
                 <% _.each(citation.violations, function(violation) { %>
                     <li>
                         <p><strong>Violation: </strong><%= violation.violation_description %></p>
-                        <% if (violation.warrant_status) { %><p class="text-danger bg-warning warrant-warning">THERE IS A WARRANT FOR THIS VIOLATION</p><% } %>
+                        <% if (violation.warrant_status) { %><p class="warrant-warning">THERE IS A WARRANT FOR THIS VIOLATION</p><% } %>
                         <p><strong>Violation Amount: </strong><span class="pull-right">$<%= violation.fine_amount %></span></p>
                         <p><strong>Court Cost: </strong><span class="pull-right">$<%= violation.court_cost %></span></p>
-                        <p><strong>Total Cost: </strong><strong class="pull-right">$<%= +violation.fine_amount + +violation.court_cost %></strong></p>
                     </li>
                 <% }); %>
                 </ol>
 
                 <p><strong><span class="orange">Court Location: </span></strong><%= citation.court_location + ', ' + citation.court_address %></p>
                 <p><strong><span class="orange">Court Date: </span></strong><%= citation.court_date %></p>
-            </li>
+            </div>
         <% }); %>
-    </ul>
+        <% //todo, sum all violation amounts into pay button text %>
     <button class="btn btn-success btn-block citation-pay">Pay</button>
 </script>
 
