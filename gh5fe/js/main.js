@@ -26,6 +26,8 @@ $body.on('click', '.submit-form', function () {
         success: function (response, status, xhr) {
             if (response.status === 'error') {
                 //
+                var mainContent = _.template($('#no-citations').html());
+                $('.main-content').prepend(mainContent({message: response.message}));
             } else if (response.status === 'success') {
 
             }
