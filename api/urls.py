@@ -12,4 +12,6 @@ urlpatterns = patterns('',
     url(r'^twilio$', "api.views.twilio"),
     
     url(r'^twilio_text$', "api.views.twilio_text"),
+    
+    url(r'^welcome_text$', "api.views.welcome_text"),
 )
