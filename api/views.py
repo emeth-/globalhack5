@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 import datetime
 import json
-from api.models import Fish
+#from api.models import Fish
 
 def json_custom_parser(obj):
     if isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date):
@@ -9,7 +9,7 @@ def json_custom_parser(obj):
         return obj.isoformat()[:dot_ix]
     else:
         raise TypeError(obj)
-
+'''
 def delete_fish(request):
     """
         Expects as input:
@@ -48,3 +48,4 @@ def get_fish(request):
         "status": "success",
         "data": list(fishies.values())
     }, default=json_custom_parser), content_type='application/json', status=200)
+'''

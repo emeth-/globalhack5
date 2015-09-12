@@ -28,7 +28,7 @@ class Citation(models.Model):
 class Violation(models.Model):
     id = models.IntegerField(primary_key=True)
     citation_number = models.IntegerField(default=0, blank=True, null=True)
-    violation_number = models.IntegerField(default=0, blank=True, null=True)
+    violation_number = models.CharField(max_length=255, default='')
     violation_description = models.CharField(max_length=255, default='')
     warrant_status = models.BooleanField(default=False)
     warrant_number = models.CharField(max_length=255, default='')
@@ -38,7 +38,7 @@ class Violation(models.Model):
     court_cost = models.CharField(max_length=255, default="")
 
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return u'%s' % (self.id)
 
     class Meta:
         verbose_name = 'Violation'
