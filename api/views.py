@@ -333,10 +333,14 @@ def get_info(request):
         citation_obj = list(citation_in_db.values())[0]
         citation_obj['violations'] = list(violations_in_db.values())
         total_owed = float(0)
+        has_warrant = False
         for v in violations_in_db:
             total_owed += float(v.fine_amount.strip('$').strip()) if v.fine_amount.strip('$').strip() else 0
             total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
+            if v.warrant_status:
+                has_warrant = True
         citation_obj['total_owed'] = total_owed
+        citation_obj['has_warrant'] = has_warrant
 
         return HttpResponse(json.dumps({
             "status": "success",

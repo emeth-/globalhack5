@@ -32,7 +32,6 @@ $body.on('click', '.submit-form', function () {
                 $('.main-content').prepend(mainContent({message: response.message}));
             } else if (response.status === 'success') {
                 var data = response.citation;
-                data.violations = [response.violation];
 
                 var content = _.template($('#list-citations').html());
                 $('.main-content').html(content({citations: [data]}));
@@ -44,3 +43,22 @@ $body.on('click', '.submit-form', function () {
 
     })
 });
+
+var threeViolations = function () {
+    $('.citation-number').val('282415157');
+    $('.drivers-license').val('L814561589');
+    $('.last-name').val('Jones');
+    $('.date-of-birth').val('10/17/1962');
+};
+var oneViolation = function () {
+    $('.citation-number').val('789674515');
+    $('.drivers-license').val('O890037612');
+    $('.last-name').val('Phillips');
+    $('.date-of-birth').val('12/30/1975');
+};
+var sixViolationsMixedWarrants = function () {
+    $('.citation-number').val('755184943');
+    $('.drivers-license').val('P974104339');
+    $('.last-name').val('Castillo');
+    $('.date-of-birth').val('7/4/1973');
+}
