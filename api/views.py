@@ -159,11 +159,18 @@ def get_info(request):
 
 
     if citation_in_db.exists():
-        violation_in_db = Violation.objects.filter(citation_number=request.GET['citation'])
+        violations_in_db = Violation.objects.filter(citation_number=request.GET['citation'])
+        citation_obj = list(citation_in_db.values())[0]
+        citation_obj['violations'] = list(violations_in_db.values())
+        total_owed = float(0)
+        for v in violations_in_db:
+            total_owed += float(v.fine_amount.strip('$').strip()) if v.fine_amount.strip('$').strip() else 0
+            total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
+        citation_obj['total_owed'] = total_owed
+
         return HttpResponse(json.dumps({
             "status": "success",
-            "citation": list(citation_in_db.values())[0],
-            "violation": list(violation_in_db.values())[0]
+            "citation": citation_obj
         }, default=json_custom_parser), content_type='application/json', status=200)
     else:
         #return error, not found
