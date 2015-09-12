@@ -97,7 +97,6 @@ def auth_second_step(request):
         }, default=json_custom_parser), content_type='application/json', status=200)
 
 
-
     if citation_in_db.exists():
         violation_in_db = Violation.objects.filter(citation_number=request.GET['citation'])
         return HttpResponse(json.dumps({
@@ -114,7 +113,7 @@ def auth_second_step(request):
 
 def twilio(request):
     
-    twil = '''<xml version="1.0" encoding="UTF-8"?>
+    twil = '''<?xml version="1.0" encoding="UTF-8"?>
             <Response>
                 <Say>Twilio can speak text.</Say>
                 <Say voice="man">It can sound like a man.</Say>
@@ -122,4 +121,14 @@ def twilio(request):
                 <Say language="es">O habla en espanol.</Say>
                 <Say voice="woman">Tada!</Say>
             </Response>'''
-    return HttpResponse(twil, content_type='application/json', status=200)
+    return HttpResponse(twil, content_type='application/xml', status=200)
+
+
+def twilio_text(request):
+    
+    twil = '''<?xml version="1.0" encoding="UTF-8"?>
+            <Response>
+                <Sms>Store Location: 123 Easy St.</Sms>
+            </Response>
+            '''
+    return HttpResponse(twil, content_type='application/xml', status=200)
