@@ -2,3 +2,5 @@
 db.sqlite3
 .idea
 .idea/*
+
+*/.DS_Store
