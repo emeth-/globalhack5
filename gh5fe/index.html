@@ -43,8 +43,11 @@
 
 <script type="foo/bar" id='yes-form'>
     <div class="form">
+        <% if (yesOrNo) { %>
         <label for="">Citation #</label>
         <input type="text" class="citation-number form-control"/>
+        <% } %>
+
         <label for="">Driver's License #</label>
         <input type="text" class="drivers-license form-control"/>
         <label for="">Name</label>
