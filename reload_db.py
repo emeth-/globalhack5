@@ -71,7 +71,7 @@ with open('violations.csv', 'rb') as f:
                 "citation_number": int(row[1]),
                 "violation_number": row[2],
                 "violation_description": row[3],
-                "warrant_status": False if row[4] == "False" else True,
+                "warrant_status": False if row[4] == "FALSE" else True,
                 "warrant_number": row[5],
                 "status": row[6],
                 "status_date": parser.parse(row[7]),
