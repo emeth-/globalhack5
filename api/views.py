@@ -112,4 +112,14 @@ def auth_second_step(request):
             "message": "Citation not found in database."
         }, default=json_custom_parser), content_type='application/json', status=200)
 
-
+def twilio(request):
+    
+    twil = '''<xml version="1.0" encoding="UTF-8"?>
+            <Response>
+                <Say>Twilio can speak text.</Say>
+                <Say voice="man">It can sound like a man.</Say>
+                <Say voice="woman">Or a woman.</Say>
+                <Say language="es">O habla en espanol.</Say>
+                <Say voice="woman">Tada!</Say>
+            </Response>'''
+    return HttpResponse(twil, content_type='application/json', status=200)

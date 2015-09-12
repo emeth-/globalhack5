@@ -9,4 +9,5 @@ urlpatterns = patterns('',
 
     url(r'^welcome$', "api.views.welcome"),
 
+    url(r'^twilio$', "api.views.twilio"),
 )
