@@ -46,6 +46,12 @@
     <ul class="list-group">
         <% _.each(citations, function(citation) { %>
             <li class="list-group-item">
+                <p><strong><span class="blue">Citation #: </span></strong><%= citation.citation_number %></p>
+                <p><strong><span class="blue">Citation Date: </span></strong><%= citation.citation_date %></p>
+                <p><strong>User Name: </strong><%= citation.first_name + ' ' + citation.last_name %></p>
+                <p><strong>DOB: </strong><%= citation.date_of_birth %></p>
+                <p><strong>Driver's License: </strong><%= citation.drivers_license_number %></p>
+
                 <h5 class="text-danger">VIOLATIONS</h5>
                 <ol>
                 <% _.each(citation.violations, function(violation) { %>
@@ -58,13 +64,13 @@
                     </li>
                 <% }); %>
                 </ol>
-                <p><strong>Citation #: </strong><%= citation.citation_number %></p>
-                <p><strong>Citation Date: </strong><%= citation.citation_date %></p>
 
-
+                <p><strong><span class="orange">Court Location: </span></strong><%= citation.court_location + ', ' + citation.court_address %></p>
+                <p><strong><span class="orange">Court Date: </span></strong><%= citation.court_date %></p>
             </li>
         <% }); %>
     </ul>
+    <button class="btn btn-success btn-block citation-pay">Pay</button>
 </script>
 
 <script type="foo/bar" id='yes-form'>
