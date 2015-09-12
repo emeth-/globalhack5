@@ -1,9 +1,9 @@
 import os, sys
 import csv
 
-#os.system("rm db.sqlite3") #Kill existing db
-#os.system("rm -rf api/migrations/") #kill existing db definitions
-#os.system("python manage.py migrate") #Create new db
+os.system("rm db.sqlite3") #Kill existing db
+os.system("rm -rf api/migrations/") #kill existing db definitions
+os.system("python manage.py migrate") #Create new db
 
 sys.path.append("hackathon/")
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
@@ -13,6 +13,23 @@ django.setup()
 from api.models import Citation, Violation
 from dateutil import parser
 
+def letter_to_number(l):
+    if l in ['a', 'b', 'c']:
+        return "2"
+    if l in ['d', 'e', 'f']:
+        return "3"
+    if l in ['g', 'h', 'i']:
+        return "4"
+    if l in ['j', 'k', 'l']:
+        return "5"
+    if l in ['m', 'n', 'o']:
+        return "6"
+    if l in ['p', 'q', 'r', 's']:
+        return "7"
+    if l in ['t', 'u', 'v']:
+        return "8"
+    if l in ['w', 'x', 'y', 'z']:
+        return "9"
 
 print "~~~~~~~~~~~~~~~~~"
 with open('citations.csv', 'rb') as f:
@@ -21,12 +38,16 @@ with open('citations.csv', 'rb') as f:
     for row in reader:
         i +=1
         if i > 1:
+            last_name_phone = ""
+            if row[4]:
+                last_name_phone = "".join([letter_to_number(x) for x in row[4].lower()])
             new_citation = Citation(**{
                 "id": int(row[0]),
                 "citation_number": int(row[1]),
                 "citation_date": parser.parse(row[2]),
                 "first_name": row[3],
                 "last_name": row[4],
+                "last_name_phone": last_name_phone,
                 "date_of_birth": parser.parse(row[5]),
                 "defendant_address": row[6],
                 "defendant_city": row[7],

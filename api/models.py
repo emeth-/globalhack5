@@ -6,6 +6,7 @@ class Citation(models.Model):
     citation_date = models.DateTimeField(blank=True, null=True)
     first_name = models.CharField(max_length=255, default='')
     last_name = models.CharField(max_length=255, default='')
+    last_name_phone = models.CharField(max_length=255, default='')
     date_of_birth = models.DateTimeField(blank=True, null=True)
     defendant_address = models.CharField(max_length=255, default='')
 
