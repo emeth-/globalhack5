@@ -133,6 +133,176 @@ def contact_received(request):
         exc_type, exc_value, exc_traceback = sys.exc_info()
         print exc_value.message
 
+def contact_received_voice(request):
+
+    try:
+        if 'citation_number' not in request.session and 'drivers_license' not in request.session:
+            
+            if 'citation_license_request_sent' not in request.session:
+    
+                request.session['citation_license_request_sent'] = True
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Gather timeout="20" method="GET">
+                                <Say>Welcome to the St. Louis Regional Municipal Court System Helpline! Please enter your citation number or driver's license number followed by the hash sign.</Say>
+                            </Gather>
+                        </Response>
+                        '''
+                return HttpResponse(twil, content_type='application/xml', status=200)
+    
+            else:
+                sms_from_user = request.GET['Digits']
+    
+                try:
+                    potential_citation_number = int(sms_from_user)
+                except:
+                    potential_citation_number = -1
+    
+                citation_in_db = Citation.objects.filter(Q(citation_number=potential_citation_number) | Q(drivers_license_number=sms_from_user))
+    
+                if not citation_in_db.exists():
+    
+                    twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                            <Response>
+                                <Gather timeout="20" method="GET">
+                                   <Say>Sorry, that was not found in our database, please try entering your citation number or driver's license number again followed by the hash sign.</Say>
+                                </Gather>
+                            </Response>
+                            '''
+                    return HttpResponse(twil, content_type='application/xml', status=200)
+    
+                else:
+                    request.session['citation_number'] = citation_in_db[0].citation_number
+                    twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                            <Response>
+                                <Gather timeout="20" method="GET">
+                                    <Say>Your citation has been found. Please enter your month of birth followed by the hash sign.</Say>
+                                </Gather>
+                            </Response>
+                            '''
+                    return HttpResponse(twil, content_type='application/xml', status=200)
+                
+        elif 'dob_month' not in request.session:
+            sms_from_user = request.GET['Digits']
+            
+            request.session['dob_month'] = sms_from_user
+            twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                    <Response>
+                        <Gather timeout="20" method="GET">
+                            <Say>Please enter your date of birth followed by the hash sign.</Say>
+                        </Gather>
+                    </Response>
+                    '''
+            return HttpResponse(twil, content_type='application/xml', status=200)
+                
+        elif 'dob_date' not in request.session:
+            sms_from_user = request.GET['Digits']
+            
+            request.session['dob_date'] = sms_from_user
+            twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                    <Response>
+                        <Gather timeout="20" method="GET">
+                            <Say>Please enter your year of birth followed by the hash sign.</Say>
+                        </Gather>
+                    </Response>
+                    '''
+            return HttpResponse(twil, content_type='application/xml', status=200)
+                
+        elif 'dob_year' not in request.session:
+            sms_from_user = request.GET['Digits']
+            request.session['dob_year'] = sms_from_user
+            
+            full_birthday = request.session['dob_month'] + "/" + request.session['dob_date'] + "/" + request.session['dob_year']
+    
+            try:
+                citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(full_birthday))
+            except:
+                del request.session['dob_month']
+                del request.session['dob_date']
+                del request.session['dob_year']
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Say>Error: {error_message}. Please try again. Please enter your month of birth followed by the hash sign.</Say>
+                        </Response>
+                        '''
+                twil = twil.replace("{error_message}", exc_value.message)
+                return HttpResponse(twil, content_type='application/xml', status=200)
+                
+    
+            if not citation_in_db.exists():
+    
+                del request.session['dob_month']
+                del request.session['dob_date']
+                del request.session['dob_year']
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Gather timeout="20" method="GET">
+                                <Say>Sorry, that date of birth was not associated with the citation number specified. Please try again. Please enter your month of birth followed by the hash sign.</Say>
+                            </Gather>
+                        </Response>
+                        '''
+                return HttpResponse(twil, content_type='application/xml', status=200)
+    
+            else:
+                request.session['dob'] = full_birthday
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Gather timeout="20" method="GET">
+                                <Say>Thank you, that matches our records. As a final form of verification, please send your last name.</Say>
+                            </Gather>
+                        </Response>
+                        '''
+                return HttpResponse(twil, content_type='application/xml', status=200)
+    
+        elif 'last_name' not in request.session:
+    
+            sms_from_user = request.GET['Digits']
+    
+            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(request.session['dob'])).filter(last_name__iexact=sms_from_user)
+    
+            if not citation_in_db.exists():
+    
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Gather timeout="20" method="GET">
+                                <Say, that last name was not associated with the citation number specified. Please try again.</Say>
+                            </Gather>
+                        </Response>
+                        '''
+                return HttpResponse(twil, content_type='application/xml', status=200)
+    
+            else:
+                request.session['last_name'] = sms_from_user
+            
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Gather timeout="20" method="GET">
+                                <Say>Thank you, that matches our records. Here is your ticket info!</Say>
+                                <Say>{ticket_info}</Say>
+                            </Gather>
+                        </Response>
+                        '''
+                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
+                twil = twil.replace("{ticket_info}", ticket_info)
+                return HttpResponse(twil, content_type='application/xml', status=200)
+            
+        else:
+            twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                    <Response>
+                        <Gather timeout="20" method="GET">
+                            <Say>Thank you, that matches our records. Here is your ticket info!</Say>
+                            <Say>{ticket_info}</Say>
+                        </Gather>
+                    </Response>
+                    '''
+            ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
+            twil = twil.replace("{ticket_info}", ticket_info)
+            return HttpResponse(twil, content_type='application/xml', status=200)
+            
+    except:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print exc_value.message
 
 def welcome(request):
     return HttpResponse(json.dumps({

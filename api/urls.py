@@ -16,5 +16,7 @@ urlpatterns = patterns('',
     url(r'^welcome_text$', "api.views.welcome_text"),
 
     url(r'^contact_received$', "api.views.contact_received"),
+    
+    url(r'^contact_received_voice$', "api.views.contact_received_voice"),
 
 )
