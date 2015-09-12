@@ -14,91 +14,99 @@ def json_custom_parser(obj):
 
 def contact_received(request):
 
-    if 'citation_number' not in request.session and 'drivers_license' not in request.session:
-        
-        if 'citation_license_request_sent' not in request.session:
-
-            request.session['citation_license_request_sent'] = True
-            twil = '''<?xml version="1.0" encoding="UTF-8"?>
-                    <Response>
-                        <Message method="GET">Welcome to the St. Louis Regional Municipal Court System Helpline! Please enter your citation number or driver's license number.</Message>
-                    </Response>
-                    '''
-            return HttpResponse(twil, content_type='application/xml', status=200)
-
-        else:
-            sms_from_user = request.POST['body']
-
-            citation_in_db = Citation.objects.filter(Q(citation_number=sms_from_user) | Q(drivers_license_number=sms_from_user))
-
-            if not citation_in_db.exists():
-
+    try:
+        if 'citation_number' not in request.session and 'drivers_license' not in request.session:
+            
+            if 'citation_license_request_sent' not in request.session:
+    
+                request.session['citation_license_request_sent'] = True
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
-                            <Message method="GET">Sorry, that was not found in our database, please try entering your citation number or driver's license number again.</Message>
+                            <Message method="GET">Welcome to the St. Louis Regional Municipal Court System Helpline! Please enter your citation number or driver's license number.</Message>
                         </Response>
                         '''
                 return HttpResponse(twil, content_type='application/xml', status=200)
-
-            else:
-                request.session['citation_number'] = citation_in_db[0].citation_number
-                return HttpResponse(json.dumps({
-                    "status": "success",
-                    "message": "Your Citation Number has been confirmed. Please send your date of birth."
-                }, default=json_custom_parser), content_type='application/json', status=200)
-
-    elif 'dob' not in request.session:
-        sms_from_user = request.POST['body']
-
-        citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(sms_from_user))
-
-        if not citation_in_db.exists():
-
-            twil = '''<?xml version="1.0" encoding="UTF-8"?>
-                    <Response>
-                        <Message method="GET">Sorry, that date of birth was not associated with the citation number specified. Please try again.</Message>
-                    </Response>
-                    '''
-            return HttpResponse(twil, content_type='application/xml', status=200)
-
-        else:
-            request.session['dob'] = sms_from_user
-            twil = '''<?xml version="1.0" encoding="UTF-8"?>
-                    <Response>
-                        <Message method="GET">Thank you, that matches our records. As a final form of verification, please send your last name.</Message>
-                    </Response>
-                    '''
-            return HttpResponse(twil, content_type='application/xml', status=200)
-
-    elif 'last_name' not in request.session:
-
-        sms_from_user = request.POST['body']
-
-        citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(request.session['dob'])).filter(last_name__iexact=sms_from_user)
-
-        if not citation_in_db.exists():
-
-            twil = '''<?xml version="1.0" encoding="UTF-8"?>
-                    <Response>
-                        <Message method="GET">Sorry, that last name was not associated with the citation number specified. Please try again.</Message>
-                    </Response>
-                    '''
-            return HttpResponse(twil, content_type='application/xml', status=200)
-
-        else:
-            request.session['dob'] = sms_from_user
-        
-            twil = '''<?xml version="1.0" encoding="UTF-8"?>
-                    <Response>
-                        <Message method="GET">Thank you, that matches our records. Here is your ticket info!</Message>
-                        <Message method="GET">{ticket_info}</Message>
-                    </Response>
-                    '''
-            ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
-            twil.replace("{ticket_info}", ticket_info)
-            return HttpResponse(twil, content_type='application/xml', status=200)
     
-
+            else:
+                sms_from_user = request.POST['Body']
+    
+                try:
+                    potential_citation_number = int(sms_from_user)
+                except:
+                    potential_citation_number = -1
+    
+                citation_in_db = Citation.objects.filter(Q(citation_number=potential_citation_number) | Q(drivers_license_number=sms_from_user))
+    
+                if not citation_in_db.exists():
+    
+                    twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                            <Response>
+                                <Message method="GET">Sorry, that was not found in our database, please try entering your citation number or driver's license number again.</Message>
+                            </Response>
+                            '''
+                    return HttpResponse(twil, content_type='application/xml', status=200)
+    
+                else:
+                    request.session['citation_number'] = citation_in_db[0].citation_number
+                    return HttpResponse(json.dumps({
+                        "status": "success",
+                        "message": "Your Citation Number has been confirmed. Please send your date of birth."
+                    }, default=json_custom_parser), content_type='application/json', status=200)
+    
+        elif 'dob' not in request.session:
+            sms_from_user = request.POST['Body']
+    
+            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(sms_from_user))
+    
+            if not citation_in_db.exists():
+    
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Message method="GET">Sorry, that date of birth was not associated with the citation number specified. Please try again.</Message>
+                        </Response>
+                        '''
+                return HttpResponse(twil, content_type='application/xml', status=200)
+    
+            else:
+                request.session['dob'] = sms_from_user
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Message method="GET">Thank you, that matches our records. As a final form of verification, please send your last name.</Message>
+                        </Response>
+                        '''
+                return HttpResponse(twil, content_type='application/xml', status=200)
+    
+        elif 'last_name' not in request.session:
+    
+            sms_from_user = request.POST['Body']
+    
+            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(request.session['dob'])).filter(last_name__iexact=sms_from_user)
+    
+            if not citation_in_db.exists():
+    
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Message method="GET">Sorry, that last name was not associated with the citation number specified. Please try again.</Message>
+                        </Response>
+                        '''
+                return HttpResponse(twil, content_type='application/xml', status=200)
+    
+            else:
+                request.session['dob'] = sms_from_user
+            
+                twil = '''<?xml version="1.0" encoding="UTF-8"?>
+                        <Response>
+                            <Message method="GET">Thank you, that matches our records. Here is your ticket info!</Message>
+                            <Message method="GET">{ticket_info}</Message>
+                        </Response>
+                        '''
+                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
+                twil.replace("{ticket_info}", ticket_info)
+                return HttpResponse(twil, content_type='application/xml', status=200)
+    except:
+        import sys
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print exc_value.message
 
 
 def welcome(request):
