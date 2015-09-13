@@ -417,7 +417,7 @@ def contact_received_voice(request):
                 twil += "<Say>You have entered an invalid option.</Say>"
 
             twil += """
-                            <Say>Press 1 to pay your outstanding balance. Press 2 to hear your citation information. Press 3 to hear your violation information.</Say>
+                            <Say>For a list of violations, press 1. For citation information, press 2. For options on how to pay outstanding fines, press 3</Say>
                         </Gather>
                     </Response>
                    """
