@@ -18,20 +18,27 @@ $body.on('click', '.look-up', function () {
     $('.main-content').html(mainContent({}));
     bindDatePicker();
 });
-
 $body.on('click', '.alternatepayments', function () {
     var mainContent = _.template($('#alternatepayments').html());
     $('.main-content').html(mainContent());
 });
-
 $body.on('click', '.nav-links', function () {
     $('#navbar').removeClass('in');
     $(this).closest('li').addClass('active').siblings().removeClass('active');
-})
+});
+$body.on('click', '.cash-money', function () {
+    $(this).closest('.modal-body').html(
+        '<iframe src="http://www.dmv.org/mo-missouri/paying-traffic-tickets.php" style="border:0;" height="600px" width="100%"></iframe>'
+    );
+});
+$body.on('click', '.alt-pay', function () {
+    $(this).closest('.modal-body').html(_.template($('#alternatepayments').html()));
+    $('.alt-pay').remove();
+});
 $body.on('click', '.submit-form', function () {
 
-    var parseDates = function (citations) {
-        _.each(citations, function (citation, index) {
+    var parseDates = function (data) {
+        _.each(data.citations, function (citation, index) {
             citation.citation_date = moment(citation.citation_date).format('MM/DD/YYYY');
             citation.court_date = moment(citation.court_date).format('MM/DD/YYYY');
             citation.date_of_birth = moment(citation.date_of_birth).format('MM/DD/YYYY');
@@ -96,10 +103,10 @@ var threeViolationsMixedWarrants = function () {
 };
 
 $body.on('click', '#gold-fish', function () {
-   if( $('#financial-status').val()=="1" && $('#income-bracket').val()=="1"){
-        $('#resuslts').html('Based on profiles similar to yours, you may qualify for alternative payment options such as community service or payment plans. Please make an appointment and speak with your judge to determine if you qualify.');
-   }
-   else {
-    $('#resuslts').html('Based on profiles similar to yours, you may NOT qualify for alternative payment options such as community service or payment plans. Please make an appointment and speak with your judge to determine your eligibility.');
+    $(this).remove();
+   if($('#financial-status').val() === '1' && $('#income-bracket').val() === '1') {
+        $('#results').html('Based on profiles similar to yours, you may qualify for alternative payment options such as community service or payment plans. Please make an appointment and speak with your judge to determine if you qualify.');
+   } else {
+        $('#results').html('Based on profiles similar to yours, you may NOT qualify for alternative payment options such as community service or payment plans. Please make an appointment and speak with your judge to determine your eligibility.');
    }
 });

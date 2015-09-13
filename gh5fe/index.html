@@ -68,7 +68,8 @@
         </ul>
         <ul class="list-group">
             <li class="list-group-item">
-                <p><strong>Public Transportation</strong></p>
+                <strong>Public Transportation</strong>
+            </li>
             <li class="list-group-item">
                 <a href="http://www.modot.org/services/carpools/CarpoolConnections.htm">Carpool</a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
@@ -93,48 +94,45 @@
                 <a href="http://www.modot.org/othertransportation/bike_ped/Bikepedintro.htm">Bicycle Pedestrain Program</a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
-              
         </ul>
         <ul class="list-group">
-            
-            
-            <li class="list-group-item + alternatepayments">
+            <li class="list-group-item alternatepayments">
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
                 <p><a href="javascript: void 0;"<strong>Alternative Forms of Payment</strong></a></p>
                 <span>Alternative forms of payment may include community service or payment plans.</span>
-                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
         </ul>
 </script>
 
 <script type="foo/bar" id='alternatepayments'>
- <h4 class="text-center"><strong>Complete and Submit to Determine Eligibility:</strong></h4>
-    <span><strong>Please select your income bracket.</strong></span>
-    <select class="form-control" id="income-bracket">
-  <option value="1">$0-$17,500/Year</option>
-  <option value="0">$17,501-$30,500/Year</option>
-  <option value="0">$30,501-$50,000/Year</option>
-  <option value="0">$50,001-greater/Year</option>
-  <option value="1">I do not know.</option>
+<h4 class="text-center"><strong>Complete and Submit to Determine Eligibility:</strong></h4>
+<label>Please select your income bracket</label>
+<select class="form-control" id="income-bracket">
+    <option value="1">$0-$17,500/Year</option>
+    <option value="0">$17,501-$30,500/Year</option>
+    <option value="0">$30,501-$50,000/Year</option>
+    <option value="0">$50,001-greater/Year</option>
+    <option value="1">I do not know.</option>
 </select>
-    <span><strong>Please select from the options below.</strong></span>
-     <select class="form-control" id="financial-status">
-  <option value="1">I am facing a financial crisis.</option>
-  <option value="0">I am not facing a financial crisis but wish to use an alternative form of payment.</option>
-  <option value="1">I am not sure if I qualify but wish to use alternate payment options.</option>
+<label>Please select from the options below</label>
+<select class="form-control" id="financial-status">
+    <option value="1">I am facing a financial crisis.</option>
+    <option value="0">I am not facing a financial crisis but wish to use an alternative form of payment.</option>
+    <option value="1">I am not sure if I qualify but wish to use alternate payment options.</option>
 </select>
-     <button type="button" id="gold-fish" class="btn btn-success btn-block bt-lg">Submit</button>
+<button type="button" id="gold-fish" class="btn btn-success btn-block btn-lg" style="margin-top: 15px;">Submit</button>
 
-<span id="resuslts"></span>
+<div id="results"></div>
 </div>
 
 </script>
-
 <script type="foo/bar" id='list-citations'>
 
         <% if (_.where(citations, function (c) {has_warrant: true}).length) { %>
             <div class="warrant-warning scary">THERE IS A WARRANT OUT FOR YOUR ARREST!</div>
             <div class="push"></div>
         <% } %>
+        <h4>There are <span><%= citations.length %></span> citations in your name.</h4>
         <% _.each(citations, function(citation) { %>
             <div class="list-group-item citation">
                 <p>
@@ -178,9 +176,31 @@
 
                 <p><strong><span class="orange">Your court date is  </span></strong><%= citation.court_date %></p>
                 <p><strong><span class="orange">Location: </span></strong><%= citation.court_location + ', ' + citation.court_address %></p>
-                <button class="btn btn-success btn-block citation-pay btn-lg">Pay <strong>$<%= citation.total_owed %></strong> Now</button>
+                <button class="btn btn-success btn-block citation-pay btn-lg" data-toggle="modal" data-target="#cite_<%= citation.citation_number %>">Pay <strong>$<%= citation.total_owed %></strong> Now</button>
+            </div>
+
+            <div class="modal fade" id="cite_<%= citation.citation_number %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Citation <%= citation.citation_number %> Payment Options</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Pay with credit card or ACH bank transfer</h5>
+                            <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-medium.png" alt="Check out with PayPal" />
+                            <hr/>
+                            <h5>Pay with cash</h5>
+                            <button class="btn btn-success cash-money">How to pay in cash</button>
+                            <hr/>
+                            <h5>Other forms of payment</h5>
+                            <button class="btn btn-success alt-pay">Find out about other forms of payment</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         <% }); %>
+
 </script>
 
 <script type="foo/bar" id='form'>
