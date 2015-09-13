@@ -1,3 +1,12 @@
+var bindDatePicker = function () {
+    $('.date-of-birth').datepicker({
+        startView: 2,
+        orientation: 'top auto',
+        autoclose: true
+    });
+};
+
+bindDatePicker();
 var $body = $('body');
 
 $body.on('click', '.resources', function () {
@@ -7,6 +16,7 @@ $body.on('click', '.resources', function () {
 $body.on('click', '.look-up', function () {
     var mainContent = _.template($('#form').html());
     $('.main-content').html(mainContent({}));
+    bindDatePicker();
 });
 $body.on('click', '.nav-links', function () {
     $('#navbar').removeClass('in');
