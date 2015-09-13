@@ -120,23 +120,16 @@
                     <strong class="blue">Citation Date: </strong>
                     <span><%= citation.citation_date %></span>
                 </p>
-                <div class="row">
-                    <div class="col-xs-7">
-                        <p>
-                            <strong>Name: </strong>
-                            <span><%= citation.first_name + ' ' + citation.last_name %></span>
-                        </p>
-                    </div>
-                    <div class="col-xs-5">
-                        <p>
-                            <strong>DOB: </strong>
-                            <span><%= citation.date_of_birth %></span>
-                        </p>
-                    </div>
-                </div>
+                <p>
+                    <strong>Name: </strong>
+                    <span><%= citation.first_name + ' ' + citation.last_name %></span>
+                </p>
+                <p>
+                    <strong>DOB: </strong>
+                    <span><%= citation.date_of_birth %></span>
+                </p>
                 <p><strong>Driver's License: </strong><%= citation.drivers_license_number %></p>
 
-                <h5 class="text-danger">Violations</h5>
                 <ol>
                 <% _.each(citation.violations, function(violation) { %>
                     <li <% if (violation.status === 'CLOSED' ) { %>class="closed"<% } %>>
@@ -158,8 +151,8 @@
                 <% }); %>
                 </ol>
 
-                <p><strong><span class="orange">Court Location: </span></strong><%= citation.court_location + ', ' + citation.court_address %></p>
-                <p><strong><span class="orange">Court Date: </span></strong><%= citation.court_date %></p>
+                <p><strong><span class="orange">Your court date is  </span></strong><%= citation.court_date %></p>
+                <p><strong><span class="orange">Location: </span></strong><%= citation.court_location + ', ' + citation.court_address %></p>
                 <button class="btn btn-success btn-block citation-pay btn-lg">Pay <strong>$<%= citation.total_owed %></strong> Now</button>
             </div>
         <% }); %>
