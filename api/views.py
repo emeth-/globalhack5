@@ -16,8 +16,15 @@ def json_custom_parser(obj):
 
 def contact_received(request):
 
-    #from django.contrib.auth import logout
-    #logout(request)
+    if 'salesforce_last_validated' in request.session:
+
+        session_expiry = (parser.parse(request.session.get('salesforce_last_validated', '2000-01-01')) + datetime.timedelta(minutes=5))
+        if session_expiry < datetime.datetime.now():
+            print "Session expired! Session expiry time", session_expiry, " | current time", datetime.datetime.now()
+            del request.session['salesforce_last_validated']
+            logout(request)
+    else:
+        request.session['salesforce_last_validated'] = datetime.datetime.now().isoformat()
 
     try:
         if 'citation_number' not in request.session and 'drivers_license' not in request.session:
