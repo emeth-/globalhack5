@@ -112,21 +112,65 @@ def contact_received(request):
                         <Response>
                             <Message method="GET">Thank you, that matches our records. Here is your ticket info!</Message>
                             <Message method="GET">{ticket_info}</Message>
+                            <Message>Send 1 to access a breakdown in your violations; send 2 to access citation information; send 3 to pay your ticket fee.</Message>
                         </Response>
                         '''
-                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
+                violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
+                citation_obj = list(citation_in_db.values())[0]
+                citation_obj['violations'] = list(violations_in_db.values())
+                total_owed = float(0)
+                has_warrant = False
+                for v in violations_in_db:
+                    total_owed += float(v.fine_amount.strip('$').strip()) if v.fine_amount.strip('$').strip() else 0
+                    total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
+                    if v.warrant_status:
+                        has_warrant = True
+                citation_obj['total_owed'] = total_owed
+                citation_obj['has_warrant'] = has_warrant
+                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address) + " / Total Amount Owed: $" + str(citation_obj['total_owed']) + " / Outstanding Warrant: " + str(citation_obj['has_warrant'])
                 twil = twil.replace("{ticket_info}", ticket_info)
                 return HttpResponse(twil, content_type='application/xml', status=200)
             
         else:
+            sms_from_user = request.POST['Body']
+            
+            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(request.session['dob'])).filter(last_name__iexact=sms_from_user)
+            violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
+            citation_obj = list(citation_in_db.values())[0]
+            citation_obj['violations'] = list(violations_in_db.values())
+            total_owed = float(0)
+            has_warrant = False
+            for v in violations_in_db:
+                total_owed += float(v.fine_amount.strip('$').strip()) if v.fine_amount.strip('$').strip() else 0
+                total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
+                if v.warrant_status:
+                    has_warrant = True
+            citation_obj['total_owed'] = total_owed
+            citation_obj['has_warrant'] = has_warrant
+            #ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
+            
             twil = '''<?xml version="1.0" encoding="UTF-8"?>
-                    <Response>
-                        <Message method="GET">Thank you, that matches our records. Here is your ticket info!</Message>
-                        <Message method="GET">{ticket_info}</Message>
-                    </Response>
-                    '''
-            ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
-            twil = twil.replace("{ticket_info}", ticket_info)
+                    <Response>'''
+            if sms_from_user == '1':
+                #break down in violations
+                for v in violations_in_db:
+                    twil += '<Message> {violation_info}</Message>'
+                    violation_info = "Violation Description: " + str(v.violation_description) + "Fine Amount: $" + str(v.fine_amount) + "Court Cost: $" + str(v.court_cost) 
+                    twil = twil.replace('{violation_info}',violation_info)
+                    
+            elif sms_from_user == '2':
+                #citation information
+                twil += '<Message>{citation_info}</Message>'
+                citation_info = "Citation Number: " + str(citation_obj['citation_number']) + "Citation Date: " + str(citation_obj['citation_date'])
+                twil.replace = twil.replace('{citation_info}',citation_info)
+                
+            elif sms_from_user == '3':
+                #ticket payment
+                twil += "<Message>Fix this one</Message>"    
+                    
+            
+            twil += """<Message>Send 1 to access a breakdown in your violations; send 2 to access citation information; send 3 to pay your ticket fee.</Message>
+                    </Response>"""
             return HttpResponse(twil, content_type='application/xml', status=200)
             
     except:
