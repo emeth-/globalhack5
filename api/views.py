@@ -426,8 +426,10 @@ def get_info(request):
             fake_citation_number = int(request.GET['important_number'])
         except:
             fake_citation_number = 0
+        print "fake_citation_number", fake_citation_number
         citation_in_db = Citation.objects.filter(Q(citation_number=fake_citation_number) | Q(drivers_license_number=request.GET['important_number']))
         if not citation_in_db.exists():
+            print ":("
             #return error, not found
             return HttpResponse(json.dumps({
                 "status": "error",
@@ -442,7 +444,8 @@ def get_info(request):
         }, default=json_custom_parser), content_type='application/json', status=200)
 
 
-    citation_in_db = Citation.objects.filter(drivers_license_number=citation_in_db[0].drivers_license_number).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
+    print "citation_in_db[0].drivers_license_number", citation_in_db[0].drivers_license_number
+    citation_in_db = Citation.objects.filter(drivers_license_number=citation_in_db[0].drivers_license_number).filter(last_name__iexact=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
 
     if citation_in_db.exists():
         all_cites = []
