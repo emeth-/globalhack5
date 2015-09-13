@@ -423,7 +423,12 @@ def get_info(request):
 
     if request.GET.get('important_number', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
 
-        citation_in_db = Citation.objects.filter(Q(citation_number=request.GET['important_number']) | Q(drivers_license_number=request.GET['important_number']))
+        citation_number = -1
+        try:
+            citation_number = int(request.GET['important_number'])
+        except:
+            pass
+        citation_in_db = Citation.objects.filter(Q(citation_number=citation_number) | Q(drivers_license_number=request.GET['important_number']))
 
     else:
 
