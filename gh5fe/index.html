@@ -27,19 +27,29 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="active look-up"><a href="javascript: void 0;">Look Up Citation</a></li>
-                <li><a href="#resources">Resources</a></li>
+                <li class="resources"><a href="javascript: void 0;">Resources</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
 <div class="container ">
     <div class="main-content">
-        <h1>Do you have your citation number?</h1>
+        <h1>Do you have a citation?</h1>
         <button class="btn btn-success btn-block citation-yes">Yes</button>
         <button class="btn btn-danger btn-block citation-no">No</button>
     </div>
 </div><!-- /.container -->
-
+<script type="foo/bar" id='resources'>
+    <ul class="list-unstyled">
+        <li><strong>How to Pay Fines</strong>
+        <li><strong>Options for Fighting a Ticket</strong></li>
+        <li><strong>Community Service</strong></li>
+        <li><strong>Monthly Payment Options</strong></li>
+        <li><strong>Attorney Info</strong></li>
+        <li><strong>Public Transportation</strong></li>
+        <li><strong>Ticket FAQs</strong></li>
+    </ul>
+</script>
 <script type="foo/bar" id='list-citations'>
 
         <% if (_.where(citations, function (c) {has_warrant: true}).length) { %>
@@ -47,14 +57,14 @@
             <div class="push"></div>
         <% } %>
         <% _.each(citations, function(citation) { %>
-            <div class="citation">
+            <li class="list-group-item">
                 <p><strong><span class="blue">Citation #: </span></strong><%= citation.citation_number %></p>
                 <p><strong><span class="blue">Citation Date: </span></strong><%= citation.citation_date %></p>
                 <p><strong>Name: </strong><%= citation.first_name + ' ' + citation.last_name %></p>
                 <p><strong>DOB: </strong><%= citation.date_of_birth %></p>
                 <p><strong>Driver's License: </strong><%= citation.drivers_license_number %></p>
 
-                <h5 class="text-scary">VIOLATIONS</h5>
+                <h5 class="text-danger">VIOLATIONS</h5>
                 <ol>
                 <% _.each(citation.violations, function(violation) { %>
                     <li>
@@ -71,7 +81,6 @@
             </div>
             <button class="btn btn-success btn-block citation-pay btn-lg">Pay <strong>$<%= citation.total_owed %></strong> Now</button>
         <% }); %>
-
 </script>
 
 <script type="foo/bar" id='look-up'>

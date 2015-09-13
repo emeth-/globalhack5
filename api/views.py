@@ -259,7 +259,7 @@ def contact_received_voice(request):
     
             sms_from_user = request.GET['Digits']
     
-            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(request.session['dob'])).filter(last_name__iexact=sms_from_user)
+            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(request.session['dob'])).filter(last_name_phone=sms_from_user)
     
             if not citation_in_db.exists():
     
@@ -277,13 +277,31 @@ def contact_received_voice(request):
             
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
-                            <Gather timeout="20" method="GET">
+                            <Gather timeout="20" method="GET" numDigits="1">
                                 <Say>Thank you, that matches our records. Here is your ticket info!</Say>
                                 <Say>{ticket_info}</Say>
+                                <Say>Press 1 to pay your outstanding balance. Press 2 to hear your citation information. Press 3 to hear your violation information.</Say>
                             </Gather>
                         </Response>
                         '''
-                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
+                violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
+                citation_obj = list(citation_in_db.values())[0]
+                citation_obj['violations'] = list(violations_in_db.values())
+                total_owed = float(0)
+                has_warrant = False
+                for v in violations_in_db:
+                    total_owed += float(v.fine_amount.strip('$').strip()) if v.fine_amount.strip('$').strip() else 0
+                    total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
+                if v.warrant_status:
+                    has_warrant = True
+                citation_obj['total_owed'] = total_owed
+                citation_obj['has_warrant'] = has_warrant
+                ticket_info = "You have a court hearing on " + str(citation_in_db[0].court_date) + " at " + str(citation_in_db[0].court_location) + " located at " + str(citation_in_db[0].court_address) + " . "
+                if has_warrant:
+                    ticket_info += " You have an outstanding warrant. "
+                else:
+                    ticket_info += " You do not have an outstanding warrant. "
+                ticket_info += "You currently have an outstanding balance of " + str(total_owed) + " dollars. "
                 twil = twil.replace("{ticket_info}", ticket_info)
                 return HttpResponse(twil, content_type='application/xml', status=200)
             
