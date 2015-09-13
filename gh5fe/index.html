@@ -57,7 +57,7 @@
             <div class="push"></div>
         <% } %>
         <% _.each(citations, function(citation) { %>
-            <li class="list-group-item">
+            <div class="citation">
                 <p><strong><span class="blue">Citation #: </span></strong><%= citation.citation_number %></p>
                 <p><strong><span class="blue">Citation Date: </span></strong><%= citation.citation_date %></p>
                 <p><strong>Name: </strong><%= citation.first_name + ' ' + citation.last_name %></p>
@@ -78,8 +78,8 @@
 
                 <p><strong><span class="orange">Court Location: </span></strong><%= citation.court_location + ', ' + citation.court_address %></p>
                 <p><strong><span class="orange">Court Date: </span></strong><%= citation.court_date %></p>
+                <button class="btn btn-success btn-block citation-pay btn-lg">Pay <strong>$<%= citation.total_owed %></strong> Now</button>
             </div>
-            <button class="btn btn-success btn-block citation-pay btn-lg">Pay <strong>$<%= citation.total_owed %></strong> Now</button>
         <% }); %>
 </script>
 
