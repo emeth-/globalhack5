@@ -169,7 +169,7 @@ def contact_received(request):
                 
             elif sms_from_user == '3':
                 #ticket payment
-                twil += "<Message>Pay by phone: \n(877) 866-3926. \n\nPay in person: \nMissouri Fine Collection Center \nP.O. Box 104540 \nJefferson City, MO 65110</Message>"    
+                twil += "<Message>To pay by phone, call \n(877) 866-3926. \n\nTo pay in person, go to \nMissouri Fine Collection Center \nP.O. Box 104540 \nJefferson City, MO 65110 \n\nFor payment plans or to perform community service in lieu of payment, request a hearing.</Message>"    
                       
             #else:
             #    twil += "<Message>You have entered an invalid option.</Message>"
@@ -194,7 +194,7 @@ def contact_received_voice(request):
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
                             <Gather timeout="20" method="GET">
-                                <Say>Welcome to the St. Louis Regional Municipal Court System Helpline! Please enter your citation number or driver's license number followed by the hash sign.</Say>
+                                <Say>Welcome to the St. Louis Regional Municipal Court System Helpline! Please enter your citation number or driver's license number followed by the pound sign.</Say>
                             </Gather>
                         </Response>
                         '''
@@ -215,7 +215,7 @@ def contact_received_voice(request):
                     twil = '''<?xml version="1.0" encoding="UTF-8"?>
                             <Response>
                                 <Gather timeout="20" method="GET">
-                                   <Say>Sorry, that was not found in our database, please try entering your citation number or driver's license number again followed by the hash sign.</Say>
+                                   <Say>Sorry, that was not found in our database, please try entering your citation number or driver's license number again followed by the pound sign.</Say>
                                 </Gather>
                             </Response>
                             '''
@@ -226,7 +226,7 @@ def contact_received_voice(request):
                     twil = '''<?xml version="1.0" encoding="UTF-8"?>
                             <Response>
                                 <Gather timeout="20" method="GET">
-                                    <Say>Your citation has been found. Please enter your month of birth followed by the hash sign.</Say>
+                                    <Say>Your citation has been found. To verify your identity, please enter your month of birth followed by the pound sign.</Say>
                                 </Gather>
                             </Response>
                             '''
@@ -239,7 +239,7 @@ def contact_received_voice(request):
             twil = '''<?xml version="1.0" encoding="UTF-8"?>
                     <Response>
                         <Gather timeout="20" method="GET">
-                            <Say>To verify your identity, please enter your date of birth followed by the hash sign.</Say>
+                            <Say>Please enter your day of birth followed by the pound sign.</Say>
                         </Gather>
                     </Response>
                     '''
@@ -252,7 +252,7 @@ def contact_received_voice(request):
             twil = '''<?xml version="1.0" encoding="UTF-8"?>
                     <Response>
                         <Gather timeout="20" method="GET">
-                            <Say>Please enter your year of birth followed by the hash sign.</Say>
+                            <Say>Please enter your year of birth followed by the pound sign.</Say>
                         </Gather>
                     </Response>
                     '''
@@ -273,7 +273,7 @@ def contact_received_voice(request):
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
-                            <Say>Error: {error_message}. Please try again. Please enter your month of birth followed by the hash sign.</Say>
+                            <Say>Error: {error_message}. Please try again. Please enter your month of birth followed by the pound sign.</Say>
                         </Response>
                         '''
                 twil = twil.replace("{error_message}", exc_value.message)
@@ -288,7 +288,7 @@ def contact_received_voice(request):
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
                             <Gather timeout="20" method="GET">
-                                <Say>Sorry, that date of birth was not associated with the citation number specified. Please try again. Please enter your month of birth followed by the hash sign.</Say>
+                                <Say>Sorry, that date of birth was not associated with the citation number specified. Please try again. Please enter your month of birth followed by the pound sign.</Say>
                             </Gather>
                         </Response>
                         '''
@@ -299,7 +299,7 @@ def contact_received_voice(request):
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
                             <Gather timeout="20" method="GET">
-                                <Say>Thank you, that matches our records. As a final form of verification, please enter your last name followed by the hash sign.</Say>
+                                <Say>Thank you, that matches our records. As a final form of verification, please enter your last name followed by the pound sign.</Say>
                             </Gather>
                         </Response>
                         '''
@@ -345,7 +345,7 @@ def contact_received_voice(request):
                     has_warrant = True
                 citation_obj['total_owed'] = total_owed
                 citation_obj['has_warrant'] = has_warrant
-                ticket_info = "You have a court hearing on " + str(citation_in_db[0].court_date) + " at " + str(citation_in_db[0].court_location) + " located at " + str(citation_in_db[0].court_address) + " . "
+                ticket_info = "You have a court hearing on " + str(citation_in_db[0].court_date) + ", at " + str(citation_in_db[0].court_location) + ", located at " + str(citation_in_db[0].court_address) + " . "
                 if has_warrant:
                     ticket_info += " You have an outstanding warrant. "
                 else:

@@ -98,12 +98,37 @@
         <ul class="list-group">
             
             
-            <li class="list-group-item">
-                <a href="http://www.modot.org/othertransportation/waterways/waterwaysferrylistings.htm"><p><strong>Alternative Forms of Payment</strong></p></a>
+            <li class="list-group-item + alternatepayments">
+                <p><a href="javascript: void 0;"<strong>Alternative Forms of Payment</strong></a></p>
                 <span>Alternative forms of payment may include community service or payment plans.</span>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
+        </ul>
 </script>
+
+<script type="foo/bar" id='alternatepayments'>
+ <h4 class="text-center"><strong>Complete and Submit to Determine Eligibility:</strong></h4>
+    <span><strong>Please select your income bracket.</strong></span>
+    <select class="form-control" id="income-bracket">
+  <option value="1">$0-$17,500/Year</option>
+  <option value="0">$17,501-$30,500/Year</option>
+  <option value="0">$30,501-$50,000/Year</option>
+  <option value="0">$50,001-greater/Year</option>
+  <option value="1">I do not know.</option>
+</select>
+    <span><strong>Please select from the options below.</strong></span>
+     <select class="form-control" id="financial-status">
+  <option value="1">I am facing a financial crisis.</option>
+  <option value="0">I am not facing a financial crisis but wish to use an alternative form of payment.</option>
+  <option value="1">I am not sure if I qualify but wish to use alternate payment options.</option>
+</select>
+     <button type="button" id="gold-fish" class="btn btn-success btn-block bt-lg">Submit</button>
+
+<span id="resuslts"></span>
+</div>
+
+</script>
+
 <script type="foo/bar" id='list-citations'>
 
         <% if (_.where(citations, function (c) {has_warrant: true}).length) { %>
