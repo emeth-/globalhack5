@@ -370,10 +370,11 @@ def get_info(request):
     if request.GET.get('citation', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
 
         citation_in_db = Citation.objects.filter(citation_number=request.GET['citation']).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
+        drivers_license_number = citation_in_db[0].drivers_license_number
 
     elif request.GET.get('drivers_license_number', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
 
-        citation_in_db = Citation.objects.filter(drivers_license_number=request.GET['drivers_license_number']).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
+        drivers_license_number = request.GET['drivers_license_number']
 
     else:
 
@@ -383,24 +384,28 @@ def get_info(request):
         }, default=json_custom_parser), content_type='application/json', status=200)
 
 
+    citation_in_db = Citation.objects.filter(drivers_license_number=drivers_license_number).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
 
     if citation_in_db.exists():
-        violations_in_db = Violation.objects.filter(citation_number=citation_in_db[0].citation_number)
-        citation_obj = list(citation_in_db.values())[0]
-        citation_obj['violations'] = list(violations_in_db.values())
-        total_owed = float(0)
-        has_warrant = False
-        for v in violations_in_db:
-            total_owed += float(v.fine_amount.strip('$').strip()) if v.fine_amount.strip('$').strip() else 0
-            total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
-            if v.warrant_status:
-                has_warrant = True
-        citation_obj['total_owed'] = total_owed
-        citation_obj['has_warrant'] = has_warrant
+        all_cites = []
+        for c in citation_in_db:
+            violations_in_db = Violation.objects.filter(citation_number=citation_in_db[0].citation_number)
+            citation_obj = list(citation_in_db.values())[0]
+            citation_obj['violations'] = list(violations_in_db.values())
+            total_owed = float(0)
+            has_warrant = False
+            for v in violations_in_db:
+                total_owed += float(v.fine_amount.strip('$').strip()) if v.fine_amount.strip('$').strip() else 0
+                total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
+                if v.warrant_status:
+                    has_warrant = True
+            citation_obj['total_owed'] = total_owed
+            citation_obj['has_warrant'] = has_warrant
+            all_cites.append(citation_obj)
 
         return HttpResponse(json.dumps({
             "status": "success",
-            "citation": citation_obj
+            "citations": all_cites
         }, default=json_custom_parser), content_type='application/json', status=200)
     else:
         #return error, not found
