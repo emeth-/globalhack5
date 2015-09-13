@@ -350,7 +350,7 @@ def contact_received_voice(request):
                         <Response>
                             <Gather timeout="20" method="GET" numDigits="1">
                                 <Say>{ticket_info}</Say>
-                                <Say>Press 1 to pay your outstanding balance. Press 2 to hear your citation information. Press 3 to hear your violation information.</Say>
+                                <Say>For a list of violations, press 1. For citation information, press 2. For options on how to pay outstanding fines, press 3</Say>
                             </Gather>
                         </Response>
                         '''
@@ -376,16 +376,51 @@ def contact_received_voice(request):
                 return HttpResponse(twil, content_type='application/xml', status=200)
 
         else:
+            sms_from_user = request.GET['Digits']
+
+            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number'])
+            violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
+            citation_obj = list(citation_in_db.values())[0]
+            citation_obj['violations'] = list(violations_in_db.values())
+            total_owed = float(0)
+            has_warrant = False
+            for v in violations_in_db:
+                total_owed += float(v.fine_amount.strip('$').strip()) if v.fine_amount.strip('$').strip() else 0
+                total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
+                if v.warrant_status:
+                    has_warrant = True
+            citation_obj['total_owed'] = total_owed
+            citation_obj['has_warrant'] = has_warrant
+
             twil = '''<?xml version="1.0" encoding="UTF-8"?>
                     <Response>
-                        <Gather timeout="20" method="GET">
-                            <Say>Thank you, that matches our records. Here is your ticket info!</Say>
-                            <Say>{ticket_info}</Say>
+                        <Gather timeout="20" method="GET" numDigits="1">
+                            '''
+            if sms_from_user == '1':
+                #break down in violations
+                for v in violations_in_db:
+                    twil += '<Say> {violation_info}</Say>'
+                    violation_info = "Your violation is " + str(v.violation_description) + ", with a fine amount of " + str(v.fine_amount) + " dollars and a court cost of " + str(v.court_cost) + " dollars"
+                    twil = twil.replace('{violation_info}',violation_info)
+
+            elif sms_from_user == '2':
+                #citation information
+                twil += '<Say>{citation_info}</Say>'
+                citation_info = "Your citation number is " + str(citation_obj['citation_number']) + ", and its date is " + str(citation_obj['citation_date']).split(' ')[0]
+                twil = twil.replace('{citation_info}',citation_info)
+
+            elif sms_from_user == '3':
+                #ticket payment
+                twil += "<Say>To pay by phone, call (877) 866-3926. To pay in person, go to Missouri Fine Collection Center, P.O. Box 104540, Jefferson City, MO 65110. For community service options, visit our online website gh5thefoot.herokuapp.com or contact your judge to see if you are eligible.</Say>"
+
+            else:
+                twil += "<Say>You have entered an invalid option.</Say>"
+
+            twil += """
+                            <Say>Press 1 to pay your outstanding balance. Press 2 to hear your citation information. Press 3 to hear your violation information.</Say>
                         </Gather>
                     </Response>
-                    '''
-            ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
-            twil = twil.replace("{ticket_info}", ticket_info)
+                   """
             return HttpResponse(twil, content_type='application/xml', status=200)
     except:
         exc_type, exc_value, exc_traceback = sys.exc_info()
