@@ -233,7 +233,7 @@ def contact_received_voice(request):
             twil = '''<?xml version="1.0" encoding="UTF-8"?>
                     <Response>
                         <Gather timeout="20" method="GET">
-                            <Say>Please enter your date of birth followed by the hash sign.</Say>
+                            <Say>To verify your identity, please enter your date of birth followed by the hash sign.</Say>
                         </Gather>
                     </Response>
                     '''
