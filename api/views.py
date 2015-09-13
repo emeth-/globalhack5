@@ -293,7 +293,7 @@ def contact_received_voice(request):
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
                             <Gather timeout="20" method="GET">
-                                <Say>Thank you, that matches our records. As a final form of verification, please send your last name.</Say>
+                                <Say>Thank you, that matches our records. As a final form of verification, please enter your last name followed by the hash sign.</Say>
                             </Gather>
                         </Response>
                         '''
@@ -322,7 +322,6 @@ def contact_received_voice(request):
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
                             <Gather timeout="20" method="GET" numDigits="1">
-                                <Say>Thank you, that matches our records. Here is your ticket info!</Say>
                                 <Say>{ticket_info}</Say>
                                 <Say>Press 1 to pay your outstanding balance. Press 2 to hear your citation information. Press 3 to hear your violation information.</Say>
                             </Gather>
