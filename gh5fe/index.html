@@ -26,15 +26,15 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active look-up"><a href="javascript: void 0;">Look Up Citation</a></li>
-                <li class="resources"><a href="javascript: void 0;">Resources</a></li>
+                <li class="nav-links active look-up"><a href="javascript: void 0;">Look Up Citation</a></li>
+                <li class="nav-links resources"><a href="javascript: void 0;">Resources</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
 <div class="container ">
     <div class="main-content">
-        <h1>Do you have a citation?</h1>
+        <h1>Do you have your citation number?</h1>
         <button class="btn btn-success btn-block citation-yes">Yes</button>
         <button class="btn btn-danger btn-block citation-no">No</button>
     </div>
@@ -87,15 +87,17 @@
                         <p><strong>Violation: </strong><%= violation.violation_description %></p>
                         <p>
                             <% if (violation.status === 'FTA WARRANT ISSUED' ) { %>
-                                <strong class="warrant-warning">THERE IS A WARRANT FOR THIS VIOLATION</strong>
+                                <strong class="warrant-warning">FTA WARRANT ISSUED</strong>
                             <% } else if (violation.status === 'CLOSED' ) { %>
                                 <strong class="safe">CLOSED</strong>
                             <% } else { %>
                                 <strong class="payment-warning">UNPAID VIOLATION</strong>
                             <% } %>
                         </p>
-                        <p><strong>Violation Amount: </strong><span class="pull-right">$<%= violation.fine_amount || 0 %></span></p>
-                        <p><strong>Court Cost: </strong><span class="pull-right">$<%= violation.court_cost || 0 %></span></p>
+                        <% if (violation.status !== 'CLOSED' ) { %>
+                            <p><strong>Violation Amount: </strong><span class="pull-right">$<%= violation.fine_amount || 0 %></span></p>
+                            <p><strong>Court Cost: </strong><span class="pull-right">$<%= violation.court_cost || 0 %></span></p>
+                        <% } %>
                     </li>
                 <% }); %>
                 </ol>

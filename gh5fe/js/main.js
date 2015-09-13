@@ -17,12 +17,18 @@ $body.on('click', '.look-up', function () {
     var mainContent = _.template($('#look-up').html());
     $('.main-content').html(mainContent({}));
 });
+$body.on('click', '.nav-links', function () {
+    $('#navbar').removeClass('in');
+    $(this).closest('li').addClass('active').siblings().removeClass('active');
+})
 $body.on('click', '.submit-form', function () {
 
-    var parseDates = function (citation) {
-        citation.citation_date = moment(citation.citation_date).format('MM/DD/YYYY');
-        citation.court_date = moment(citation.court_date).format('MM/DD/YYYY');
-        citation.date_of_birth = moment(citation.date_of_birth).format('MM/DD/YYYY');
+    var parseDates = function (citations) {
+        _.each(citations, function (citation, index) {
+            citation.citation_date = moment(citation.citation_date).format('MM/DD/YYYY');
+            citation.court_date = moment(citation.court_date).format('MM/DD/YYYY');
+            citation.date_of_birth = moment(citation.date_of_birth).format('MM/DD/YYYY');
+        });
     };
 
     $('.server-error').remove();
@@ -47,18 +53,15 @@ $body.on('click', '.submit-form', function () {
                 var mainContent = _.template($('#no-citations').html());
                 $('.main-content').prepend(mainContent({message: response.message}));
             } else if (response.status === 'success') {
-                var data = response.citation;
-
-                parseDates(data);
+                parseDates(response);
                 var content = _.template($('#list-citations').html());
-                $('.main-content').html(content({citations: [data]}));
+                $('.main-content').html(content(response));
             }
         },
         error: function () {
-            debugger;
-        }
 
-    })
+        }
+    });
 });
 
 var threeViolations = function () {
@@ -73,9 +76,9 @@ var oneViolation = function () {
     $('.last-name').val('Phillips');
     $('.date-of-birth').val('12/30/1975');
 };
-var sixViolationsMixedWarrants = function () {
+var threeViolationsMixedWarrants = function () {
     $('.citation-number').val('755184943');
     $('.drivers-license').val('P974104339');
     $('.last-name').val('Castillo');
     $('.date-of-birth').val('7/4/1973');
-}
+};
