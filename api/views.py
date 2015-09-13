@@ -158,7 +158,7 @@ def contact_received_voice(request):
                 except:
                     potential_citation_number = -1
     
-                citation_in_db = Citation.objects.filter(Q(citation_number=potential_citation_number) | Q(drivers_license_number=sms_from_user))
+                citation_in_db = Citation.objects.filter(Q(citation_number=potential_citation_number) | Q(drivers_license_number_phone=sms_from_user))
     
                 if not citation_in_db.exists():
     
