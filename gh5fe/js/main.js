@@ -1,9 +1,14 @@
 var $body = $('body');
 
+$body.on('click', '.resources', function () {
+    var mainContent = _.template($('#resources').html());
+    $('.main-content').html(mainContent());
+});
 $body.on('click', '.citation-yes', function () {
     var mainContent = _.template($('#yes-form').html());
     $('.main-content').html(mainContent({yesOrNo: true}));
 });
+
 $body.on('click', '.citation-no', function () {
     var mainContent = _.template($('#yes-form').html());
     $('.main-content').html(mainContent({yesOrNo: false}));

@@ -27,7 +27,7 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
-                <li><a href="#resources">Resources</a></li>
+                <li class="resources"><a href="#resources">Resources</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -39,7 +39,18 @@
         <button class="btn btn-danger btn-block citation-no">No</button>
     </div>
 </div><!-- /.container -->
-
+<script type="foo/bar" id='resources'>
+    <ul class="list-unstyled">
+        <li><strong>How to Pay Fines</strong>
+            <ul><li><a href="http://www.dmv.org/mo-missouri/paying-traffic-tickets.php">Paying Tickets</a></li></ul></li>
+        <li><strong>Options for Fighting a Ticket</strong></li>
+        <li><strong>Community Service</strong></li>
+        <li><strong>Monthly Payment Options</strong></li>
+        <li><strong>Attorney Info</strong></li>
+        <li><strong>Public Transportation</strong></li>
+        <li><strong>Ticket FAQs</strong></li>
+    </ul>
+</script>
 <script type="foo/bar" id='list-citations'>
 
         <% if (_.filter(_.map(_.map(citations, function (c) { return c.violations }), function (va) {return va[0]}), function (v) {return v.warrant_status;}).length) { %>
