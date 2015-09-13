@@ -115,7 +115,7 @@ def contact_received(request):
                         <Response>
                             <Message method="GET">Thank you, that matches our records. Here is your ticket info!</Message>
                             <Message method="GET">{ticket_info}</Message>
-                            <Message>Send 1 to access a breakdown in your violations. \nSend 2 to access citation information. \nSend 3 to pay your ticket fee.</Message>
+                            <Message>For a list of violations, send 1. \nFor Citation information, send 2. \nFor options on how to pay outstanding fines, send 3.</Message>
                         </Response>
                         '''
                 violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
@@ -130,7 +130,7 @@ def contact_received(request):
                         has_warrant = True
                 citation_obj['total_owed'] = total_owed
                 citation_obj['has_warrant'] = has_warrant
-                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address) + " / Total Amount Owed: $" + str(citation_obj['total_owed']) + " / Outstanding Warrant: " + str(citation_obj['has_warrant'])
+                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + "\n" + "Court Location: " + str(citation_in_db[0].court_location) + "\n" + "Court Address: " + str(citation_in_db[0].court_address) + "\n" + "Total Amount Owed: $" + str(citation_obj['total_owed']) + "\n" + "Outstanding Warrant: " + str(citation_obj['has_warrant'])
                 twil = twil.replace("{ticket_info}", ticket_info)
                 return HttpResponse(twil, content_type='application/xml', status=200)
             
