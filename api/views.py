@@ -381,7 +381,8 @@ def get_info(request):
     if request.GET.get('citation', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
 
         citation_in_db = Citation.objects.filter(citation_number=request.GET['citation']).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
-        drivers_license_number = citation_in_db[0].drivers_license_number
+        if citation_in_db.exists():
+            drivers_license_number = citation_in_db[0].drivers_license_number
 
     elif request.GET.get('drivers_license_number', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
 
