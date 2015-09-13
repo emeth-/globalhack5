@@ -26,14 +26,9 @@ $body.on('click', '.nav-links', function () {
     $('#navbar').removeClass('in');
     $(this).closest('li').addClass('active').siblings().removeClass('active');
 });
-$body.on('click', '.cash-money', function () {
-    $(this).closest('.modal-body').html(
-        '<iframe src="http://www.dmv.org/mo-missouri/paying-traffic-tickets.php" style="border:0;" height="600px" width="100%"></iframe>'
-    );
-});
 $body.on('click', '.alt-pay', function () {
     $(this).closest('.modal-body').html(_.template($('#alternatepayments').html()));
-    $('.alt-pay').remove();
+    $(this).closest('.modal-body').find('.alt-pay').remove();
 });
 $body.on('click', '.submit-form', function () {
 

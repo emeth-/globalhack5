@@ -35,6 +35,7 @@
 </nav>
 <div class="container ">
     <div class="main-content">
+        <h5 class="bg-warning" style="padding: 8px 10px;">Use this secure form to look up any citations that may exist in your name.</h5>
         <div class="form">
             <label for="">Driver's License # <span class="label label-default">OR</span> Citation #</label>
             <input type="text" class="important-number form-control"/>
@@ -50,19 +51,19 @@
         <h4 class="text-center"><strong>RESOURCES</strong></h4>
         <ul class="list-group">
             <li class="list-group-item">
-                <a href="http://www.dmv.org/mo-missouri/traffic-ticket-faq.php"><strong>Ticket FAQs</strong></a>
+                <a href="http://www.dmv.org/mo-missouri/traffic-ticket-faq.php" target="_blank"><strong>Ticket FAQs</strong></a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.dmv.org/mo-missouri/paying-traffic-tickets.php"><strong>How to Pay Fines</strong></a>
+                <a href="http://www.dmv.org/mo-missouri/paying-traffic-tickets.php" target="_blank"><strong>How to Pay Fines</strong></a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.dmv.org/mo-missouri/fighting-your-traffic-ticket.php"><strong>Options for Fighting a Ticket</strong></a>
+                <a href="http://www.dmv.org/mo-missouri/fighting-your-traffic-ticket.php" target="_blank"><strong>Options for Fighting a Ticket</strong></a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.dmv.org/mo-missouri/traffic-ticket-attorneys.php"><strong>Attorney Info</strong></a>
+                <a href="http://www.dmv.org/mo-missouri/traffic-ticket-attorneys.php" target="_blank"><strong>Attorney Info</strong></a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
         </ul>
@@ -71,27 +72,27 @@
                 <strong>Public Transportation</strong>
             </li>
             <li class="list-group-item">
-                <a href="http://www.modot.org/services/carpools/CarpoolConnections.htm">Carpool</a>
+                <a href="http://www.modot.org/services/carpools/CarpoolConnections.htm" target="_blank">Carpool</a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.modot.org/othertransportation/transit/transitlinks.htm">Bus Transportation</a>
+                <a href="http://www.modot.org/othertransportation/transit/transitlinks.htm" target="_blank">Bus Transportation</a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.modot.org/othertransportation/aviation/aviationlinks.htm">Aviation</a>
+                <a href="http://www.modot.org/othertransportation/aviation/aviationlinks.htm" target="_blank">Aviation</a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.modot.org/othertransportation/rail/passenger.htm">Train</a>
+                <a href="http://www.modot.org/othertransportation/rail/passenger.htm" target="_blank">Train</a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.modot.org/othertransportation/waterways/waterwaysferrylistings.htm">Ferry Locations</a>
+                <a href="http://www.modot.org/othertransportation/waterways/waterwaysferrylistings.htm" target="_blank">Ferry Locations</a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.modot.org/othertransportation/bike_ped/Bikepedintro.htm">Bicycle Pedestrain Program</a>
+                <a href="http://www.modot.org/othertransportation/bike_ped/Bikepedintro.htm" target="_blank">Bicycle Pedestrain Program</a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
         </ul>
@@ -105,7 +106,7 @@
 </script>
 
 <script type="foo/bar" id='alternatepayments'>
-<h4 class="text-center"><strong>Complete and Submit to Determine Eligibility:</strong></h4>
+<h4><strong>Complete and submit to determine eligibility for community service:</strong></h4>
 <label>Please select your income bracket</label>
 <select class="form-control" id="income-bracket">
     <option value="1">$0-$17,500/Year</option>
@@ -174,8 +175,8 @@
                 <% }); %>
                 </ol>
 
-                <p><strong><span class="orange">Your court date is  </span></strong><%= citation.court_date %></p>
-                <p><strong><span class="orange">Location: </span></strong><%= citation.court_location + ', ' + citation.court_address %></p>
+                <p class="bigger"><strong><span class="orange">Your court date is  </span></strong><%= citation.court_date %></p>
+                <p class="bigger"><strong><span class="orange">Location: </span></strong><%= citation.court_location + ', ' + citation.court_address %></p>
                 <button class="btn btn-success btn-block citation-pay btn-lg" data-toggle="modal" data-target="#cite_<%= citation.citation_number %>">Pay <strong>$<%= citation.total_owed %></strong> Now</button>
             </div>
 
@@ -193,8 +194,8 @@
                             <h5>Pay with cash</h5>
                             <a href="http://www.dmv.org/mo-missouri/paying-traffic-tickets.php" target="_blank" class="btn btn-success">How to pay in cash</a>
                             <hr/>
-                            <h5>Other forms of payment</h5>
-                            <button class="btn btn-success alt-pay">Other forms of payment</button>
+                            <h5>Am I eligible for community service?</h5>
+                            <button class="btn btn-success alt-pay">Find out now</button>
                         </div>
                     </div>
                 </div>
@@ -203,8 +204,9 @@
 </script>
 
 <script type="foo/bar" id='form'>
+    <h5 class="bg-warning" style="padding: 8px 10px;">Use this secure form to look up any citations that may exist in your name.</h5>
     <div class="form">
-        <label for="">Driver's License #</label>
+        <label for="">Driver's License # <span class="label label-default">OR</span> Citation #</label>
         <input type="text" class="important-number form-control"/>
         <label for="">Last Name</label>
         <input type="text" class="last-name form-control"/>
