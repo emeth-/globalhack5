@@ -19,13 +19,10 @@ $body.on('click', '.look-up', function () {
     bindDatePicker();
 });
 
-
 $body.on('click', '.alternatepayments', function () {
     var mainContent = _.template($('#alternatepayments').html());
     $('.main-content').html(mainContent());
 });
-
-
 
 $body.on('click', '.nav-links', function () {
     $('#navbar').removeClass('in');
