@@ -94,3 +94,12 @@ var threeViolationsMixedWarrants = function () {
     $('.last-name').val('Castillo');
     $('.date-of-birth').val('7/4/1973');
 };
+
+$body.on('click', '#gold-fish', function () {
+   if( $('#financial-status').val()=="1" && $('#income-bracket').val()=="1"){
+        $('#resuslts').html('Based on profiles similar to yours, you may qualify for alternative payment options such as community service or payment plans. Please make an appointment and speak with your judge to determine if you qualify.');
+   }
+   else {
+    $('#resuslts').html('Based on profiles similar to yours, you may NOT qualify for alternative payment options such as community service or payment plans. Please make an appointment and speak with your judge to determine your eligibility.');
+   }
+});
