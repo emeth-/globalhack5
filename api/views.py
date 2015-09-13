@@ -388,9 +388,10 @@ def get_info(request):
 
     if citation_in_db.exists():
         all_cites = []
+        i = 0
         for c in citation_in_db:
             violations_in_db = Violation.objects.filter(citation_number=c.citation_number)
-            citation_obj = list(citation_in_db.values())[0]
+            citation_obj = list(citation_in_db.values())[i]
             citation_obj['violations'] = list(violations_in_db.values())
             total_owed = float(0)
             has_warrant = False
@@ -402,6 +403,7 @@ def get_info(request):
             citation_obj['total_owed'] = total_owed
             citation_obj['has_warrant'] = has_warrant
             all_cites.append(citation_obj)
+            i += 1
 
         return HttpResponse(json.dumps({
             "status": "success",

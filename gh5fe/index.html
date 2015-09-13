@@ -78,12 +78,16 @@
                 </p>
                 <div class="row">
                     <div class="col-xs-7">
-                        <strong>Name: </strong>
-                        <span><%= citation.first_name + ' ' + citation.last_name %></span>
+                        <p>
+                            <strong>Name: </strong>
+                            <span><%= citation.first_name + ' ' + citation.last_name %></span>
+                        </p>
                     </div>
                     <div class="col-xs-5">
-                        <strong>DOB: </strong>
-                        <span><%= citation.date_of_birth %></span>
+                        <p>
+                            <strong>DOB: </strong>
+                            <span><%= citation.date_of_birth %></span>
+                        </p>
                     </div>
                 </div>
                 <p><strong>Driver's License: </strong><%= citation.drivers_license_number %></p>
