@@ -74,6 +74,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hackathon.wsgi.application'
 
+import platform
+if platform.system() == 'Darwin':
+    import os
+    os.system("say penguin")
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
