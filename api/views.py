@@ -371,15 +371,9 @@ def contact_received_voice(request):
 
 def get_info(request):
 
-    if request.GET.get('citation', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
+    if request.GET.get('important_number', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
 
-        citation_in_db = Citation.objects.filter(citation_number=request.GET['citation']).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
-        if citation_in_db.exists():
-            drivers_license_number = citation_in_db[0].drivers_license_number
-
-    elif request.GET.get('drivers_license_number', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
-
-        drivers_license_number = request.GET['drivers_license_number']
+        citation_in_db = Citation.objects.filter(Q(citation_number=request.GET['important_number']) | Q(drivers_license_number=request.GET['important_number']))
 
     else:
 
@@ -389,7 +383,7 @@ def get_info(request):
         }, default=json_custom_parser), content_type='application/json', status=200)
 
 
-    citation_in_db = Citation.objects.filter(drivers_license_number=drivers_license_number).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
+    citation_in_db = Citation.objects.filter(drivers_license_number=citation_in_db[0].drivers_license_number).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
 
     if citation_in_db.exists():
         all_cites = []
