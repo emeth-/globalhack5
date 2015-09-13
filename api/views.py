@@ -115,7 +115,7 @@ def contact_received(request):
                         <Response>
                             <Message method="GET">Thank you, that matches our records. Here is your ticket info!</Message>
                             <Message method="GET">{ticket_info}</Message>
-                            <Message>Send 1 to access a breakdown in your violations; send 2 to access citation information; send 3 to pay your ticket fee.</Message>
+                            <Message>Send 1 to access a breakdown in your violations. \nSend 2 to access citation information. \nSend 3 to pay your ticket fee.</Message>
                         </Response>
                         '''
                 violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
@@ -137,15 +137,10 @@ def contact_received(request):
         else:
             sms_from_user = request.POST['Body']
             
-            print "sb1"
             citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number'])
-            print "sb2"
             violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
-            print "sb3"
             citation_obj = list(citation_in_db.values())[0]
-            print "sb4"
             citation_obj['violations'] = list(violations_in_db.values())
-            print "sb5"
             total_owed = float(0)
             has_warrant = False
             for v in violations_in_db:
@@ -153,12 +148,10 @@ def contact_received(request):
                 total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
                 if v.warrant_status:
                     has_warrant = True
-            print "sb6"
             citation_obj['total_owed'] = total_owed
             citation_obj['has_warrant'] = has_warrant
             #ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
             
-            print "sb7"
             twil = '''<?xml version="1.0" encoding="UTF-8"?>
                     <Response>'''
             if sms_from_user == '1':
@@ -176,7 +169,7 @@ def contact_received(request):
                 
             elif sms_from_user == '3':
                 #ticket payment
-                twil += "<Message>Fix this one</Message>"    
+                twil += "<Message>Pay by phone: \n(877) 866-3926. \nPay in person: \nMissouri Fine Collection Center \nP.O. Box 104540 \nJefferson City, MO 65110</Message>"    
                         
 
             twil += """
