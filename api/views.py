@@ -115,7 +115,7 @@ def contact_received(request):
                         <Response>
                             <Message method="GET">Thank you, that matches our records. Here is your ticket info!</Message>
                             <Message method="GET">{ticket_info}</Message>
-                            <Message>Send 1 to access a breakdown in your violations; send 2 to access citation information; send 3 to pay your ticket fee.</Message>
+                            <Message>For a list of violations, send 1. \nFor Citation information, send 2. \nFor options on how to pay outstanding fines, send 3.</Message>
                         </Response>
                         '''
                 violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
@@ -130,22 +130,17 @@ def contact_received(request):
                         has_warrant = True
                 citation_obj['total_owed'] = total_owed
                 citation_obj['has_warrant'] = has_warrant
-                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address) + " / Total Amount Owed: $" + str(citation_obj['total_owed']) + " / Outstanding Warrant: " + str(citation_obj['has_warrant'])
+                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + "\n" + "Court Location: " + str(citation_in_db[0].court_location) + "\n" + "Court Address: " + str(citation_in_db[0].court_address) + "\n" + "Total Amount Owed: $" + str(citation_obj['total_owed']) + "\n" + "Outstanding Warrant: " + str(citation_obj['has_warrant'])
                 twil = twil.replace("{ticket_info}", ticket_info)
                 return HttpResponse(twil, content_type='application/xml', status=200)
             
         else:
             sms_from_user = request.POST['Body']
             
-            print "sb1"
             citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number'])
-            print "sb2"
             violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
-            print "sb3"
             citation_obj = list(citation_in_db.values())[0]
-            print "sb4"
             citation_obj['violations'] = list(violations_in_db.values())
-            print "sb5"
             total_owed = float(0)
             has_warrant = False
             for v in violations_in_db:
@@ -153,12 +148,10 @@ def contact_received(request):
                 total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
                 if v.warrant_status:
                     has_warrant = True
-            print "sb6"
             citation_obj['total_owed'] = total_owed
             citation_obj['has_warrant'] = has_warrant
             #ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
             
-            print "sb7"
             twil = '''<?xml version="1.0" encoding="UTF-8"?>
                     <Response>'''
             if sms_from_user == '1':
@@ -176,7 +169,7 @@ def contact_received(request):
                 
             elif sms_from_user == '3':
                 #ticket payment
-                twil += "<Message>Fix this one</Message>"    
+                twil += "<Message>Pay by phone: \n(877) 866-3926. \nPay in person: \nMissouri Fine Collection Center \nP.O. Box 104540 \nJefferson City, MO 65110</Message>"    
                         
 
             twil += """
@@ -378,14 +371,9 @@ def contact_received_voice(request):
 
 def get_info(request):
 
-    if request.GET.get('citation', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
+    if request.GET.get('important_number', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
 
-        citation_in_db = Citation.objects.filter(citation_number=request.GET['citation']).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
-        drivers_license_number = citation_in_db[0].drivers_license_number
-
-    elif request.GET.get('drivers_license_number', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
-
-        drivers_license_number = request.GET['drivers_license_number']
+        citation_in_db = Citation.objects.filter(Q(citation_number=request.GET['important_number']) | Q(drivers_license_number=request.GET['important_number']))
 
     else:
 
@@ -395,7 +383,7 @@ def get_info(request):
         }, default=json_custom_parser), content_type='application/json', status=200)
 
 
-    citation_in_db = Citation.objects.filter(drivers_license_number=drivers_license_number).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
+    citation_in_db = Citation.objects.filter(drivers_license_number=citation_in_db[0].drivers_license_number).filter(last_name=request.GET['last_name']).filter(date_of_birth=parser.parse(request.GET['date_of_birth']))
 
     if citation_in_db.exists():
         all_cites = []
