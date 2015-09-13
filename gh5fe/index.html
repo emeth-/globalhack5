@@ -58,18 +58,40 @@
         <% } %>
         <% _.each(citations, function(citation) { %>
             <div class="citation">
-                <p><strong><span class="blue">Citation #: </span></strong><%= citation.citation_number %></p>
-                <p><strong><span class="blue">Citation Date: </span></strong><%= citation.citation_date %></p>
-                <p><strong>Name: </strong><%= citation.first_name + ' ' + citation.last_name %></p>
-                <p><strong>DOB: </strong><%= citation.date_of_birth %></p>
+                <p>
+                    <strong class="blue">Citation #: </strong>
+                    <span><%= citation.citation_number %></span>
+                </p>
+                <p>
+                    <strong class="blue">Citation Date: </strong>
+                    <span><%= citation.citation_date %></span>
+                </p>
+                <div class="row">
+                    <div class="col-xs-7">
+                        <strong>Name: </strong>
+                        <span><%= citation.first_name + ' ' + citation.last_name %></span>
+                    </div>
+                    <div class="col-xs-5">
+                        <strong>DOB: </strong>
+                        <span><%= citation.date_of_birth %></span>
+                    </div>
+                </div>
                 <p><strong>Driver's License: </strong><%= citation.drivers_license_number %></p>
 
                 <h5 class="text-danger">VIOLATIONS</h5>
                 <ol>
                 <% _.each(citation.violations, function(violation) { %>
-                    <li>
+                    <li <% if (violation.status === 'CLOSED' ) { %>class="closed"<% } %>>
                         <p><strong>Violation: </strong><%= violation.violation_description %></p>
-                        <% if (violation.warrant_status) { %><p class="warrant-warning">THERE IS A WARRANT FOR THIS VIOLATION</p><% } %>
+                        <p>
+                            <% if (violation.status === 'FTA WARRANT ISSUED' ) { %>
+                                <strong class="warrant-warning">THERE IS A WARRANT FOR THIS VIOLATION</strong>
+                            <% } else if (violation.status === 'CLOSED' ) { %>
+                                <strong class="safe">CLOSED</strong>
+                            <% } else { %>
+                                <strong class="payment-warning">UNPAID VIOLATION</strong>
+                            <% } %>
+                        </p>
                         <p><strong>Violation Amount: </strong><span class="pull-right">$<%= violation.fine_amount || 0 %></span></p>
                         <p><strong>Court Cost: </strong><span class="pull-right">$<%= violation.court_cost || 0 %></span></p>
                     </li>
