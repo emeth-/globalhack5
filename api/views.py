@@ -169,7 +169,7 @@ def contact_received(request):
                 
             elif sms_from_user == '3':
                 #ticket payment
-                twil += "<Message>Pay by phone: \n(877) 866-3926. \n\nPay in person: \nMissouri Fine Collection Center \nP.O. Box 104540 \nJefferson City, MO 65110</Message>"    
+                twil += "<Message>To pay by phone, call \n(877) 866-3926. \n\nTo pay in person, go to \nMissouri Fine Collection Center \nP.O. Box 104540 \nJefferson City, MO 65110 \n\nFor payment plans or to perform community service in lieu of payment, request a hearing.</Message>"    
                       
             #else:
             #    twil += "<Message>You have entered an invalid option.</Message>"
