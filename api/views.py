@@ -389,7 +389,7 @@ def get_info(request):
     if citation_in_db.exists():
         all_cites = []
         for c in citation_in_db:
-            violations_in_db = Violation.objects.filter(citation_number=citation_in_db[0].citation_number)
+            violations_in_db = Violation.objects.filter(citation_number=c.citation_number)
             citation_obj = list(citation_in_db.values())[0]
             citation_obj['violations'] = list(violations_in_db.values())
             total_owed = float(0)
