@@ -13,6 +13,7 @@ class Citation(models.Model):
     defendant_city = models.CharField(max_length=255, default='')
     defendant_state = models.CharField(max_length=255, default='')
     drivers_license_number = models.CharField(max_length=255, default='')
+    drivers_license_number_phone = models.CharField(max_length=255, default='')
     court_date = models.DateTimeField(blank=True, null=True)
 
     court_location = models.CharField(max_length=255, default='')
