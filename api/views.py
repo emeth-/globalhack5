@@ -121,7 +121,7 @@ def contact_received(request):
             
                 twil = '''<?xml version="1.0" encoding="UTF-8"?>
                         <Response>
-                            <Message method="GET">{ticket_info} \n For a list of violations, send 1. For citation information, send 2. \nFor options on how to pay outstanding fines, send 3.</Message>
+                            <Message method="GET">{ticket_info} \n For a list of violations, send 1. For citation information, send 2. For options on how to pay outstanding fines, send 3.</Message>
                         </Response>
                         '''
                 violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
@@ -142,7 +142,7 @@ def contact_received(request):
                     ticket_info += " You have an outstanding warrant. "
                 else:
                     ticket_info += " You do not have an outstanding warrant. "
-                ticket_info += "You currently have an outstanding balance of " + str(total_owed) + " dollars. "
+                ticket_info += "You currently have an outstanding balance of $" + str(total_owed) + ". "
                 twil = twil.replace("{ticket_info}", ticket_info)
                 return HttpResponse(twil, content_type='application/xml', status=200)
             
@@ -180,7 +180,7 @@ def contact_received(request):
                 
             elif sms_from_user == '3':
                 #ticket payment
-                twil += "<Message>To pay by phone, call (877) 866-3926. To pay in person, go to Missouri Fine Collection Center, P.O. Box 104540, Jefferson City, MO 65110. For payment plans or to perform community service in lieu of payment, request a hearing.</Message>"
+                twil += "<Message>To pay by phone, call (877) 866-3926. To pay in person, go to Missouri Fine Collection Center, P.O. Box 104540, Jefferson City, MO 65110. For community service options, visit our online website gh5thefoot.herokuapp.com or contact your judge to see if you are eligible.</Message>"
                       
             else:
                 twil += "<Message>You have entered an invalid option.</Message>"
