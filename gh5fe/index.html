@@ -40,25 +40,63 @@
     </div>
 </div><!-- /.container -->
 <script type="foo/bar" id='resources'>
-    <ul class="list-unstyled">
-        <li><a href="http://www.dmv.org/mo-missouri/paying-traffic-tickets.php"><strong>How to Pay Fines</strong></a></li>
-        <li><a href="http://www.dmv.org/mo-missouri/fighting-your-traffic-ticket.php"><strong>Options for Fighting a Ticket</strong></a></li>
-        <li><strong>Community Service</strong>
-            <p>To see if you are eligible for a community service payment alternative, please request a hearing and discuss this option with your judge.</p></li>
-        <li><strong>Monthly Payment Options</strong></li>
-            <p>To see if you are eligible for a payment plan, please request a hearing and discuss this option with your judge.</p></li>
-        <li><a href="http://www.dmv.org/mo-missouri/traffic-ticket-attorneys.php"><strong>Attorney Info</strong></a></li>
-        <li><strong>Public Transportation</strong></li>
-            <ul class="list-unstyled">
-                <li><a href="http://www.modot.org/services/carpools/CarpoolConnections.htm">Carpool</a></li>
-                <li><a href="http://www.modot.org/othertransportation/transit/transitlinks.htm">Bus Transit</a></li>
-                <li><a href="http://www.modot.org/othertransportation/aviation/aviationlinks.htm">Aviation</a></li>
-                <li><a href="http://www.modot.org/othertransportation/rail/passenger.htm">Train</a></li>
-                <li><a href="http://www.modot.org/othertransportation/waterways/waterwaysferrylistings.htm">Ferry Locations</a></li>
-                <li><a href="http://www.modot.org/othertransportation/bike_ped/Bikepedintro.htm">Bicycle Pedestrian Program</a></li>
-            </ul>
-        <li><a href="http://www.dmv.org/mo-missouri/traffic-ticket-faq.php"><strong>Ticket FAQs</strong></a></li>
-    </ul>
+        <h4 class="text-center"><strong>RESOURCES</strong></h4>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="http://www.dmv.org/mo-missouri/traffic-ticket-faq.php">Ticket FAQs</a>
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </li>
+            <li class="list-group-item">
+                <a href="http://www.dmv.org/mo-missouri/paying-traffic-tickets.php">How to Pay Fines</a>
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </li>
+            <li class="list-group-item">
+                <a href="http://www.dmv.org/mo-missouri/fighting-your-traffic-ticket.php">Options for Fighting a Ticket</a>
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </li>
+            <li class="list-group-item">
+                <a href="http://www.dmv.org/mo-missouri/traffic-ticket-attorneys.php">Attorney Info</a>
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </li>   
+        </ul>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <p><strong>Public Transportation</strong></p>
+            <li class="list-group-item">
+                <a href="http://www.modot.org/services/carpools/CarpoolConnections.htm">Carpool</a>
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </li>
+            <li class="list-group-item">
+                <a href="http://www.modot.org/othertransportation/transit/transitlinks.htm">Bus Transportation</a>
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </li>
+            <li class="list-group-item">
+                <a href="http://www.modot.org/othertransportation/aviation/aviationlinks.htm">Aviation</a>
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </li>
+            <li class="list-group-item">
+                <a href="http://www.modot.org/othertransportation/rail/passenger.htm">Train</a>
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </li>
+            <li class="list-group-item">
+                <a href="http://www.modot.org/othertransportation/waterways/waterwaysferrylistings.htm">Ferry Locations</a>
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </li><li class="list-group-item">
+                <a href="http://www.modot.org/othertransportation/bike_ped/Bikepedintro.htm">Bicycle Pedestrain Program</a>
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </li>
+              
+        </ul>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <p><strong>Community Service</strong></p>
+                <span>To see if you are eligible for a community service payment alternative, please request a hearing and discuss this option with your judge.</span>
+            </li>
+            <li class="list-group-item">
+                <p><strong>Monthly Payment Options</strong></p>
+                <span>To see if you are eligible for a payment plan, please request a hearing and discuss this option with your judge.</span>
+            </li>
+        </ul>
 </script>
 <script type="foo/bar" id='list-citations'>
 
@@ -78,12 +116,16 @@
                 </p>
                 <div class="row">
                     <div class="col-xs-7">
-                        <strong>Name: </strong>
-                        <span><%= citation.first_name + ' ' + citation.last_name %></span>
+                        <p>
+                            <strong>Name: </strong>
+                            <span><%= citation.first_name + ' ' + citation.last_name %></span>
+                        </p>
                     </div>
                     <div class="col-xs-5">
-                        <strong>DOB: </strong>
-                        <span><%= citation.date_of_birth %></span>
+                        <p>
+                            <strong>DOB: </strong>
+                            <span><%= citation.date_of_birth %></span>
+                        </p>
                     </div>
                 </div>
                 <p><strong>Driver's License: </strong><%= citation.drivers_license_number %></p>

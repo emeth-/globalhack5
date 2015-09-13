@@ -20,11 +20,11 @@ $body.on('click', '.look-up', function () {
 $body.on('click', '.nav-links', function () {
     $('#navbar').removeClass('in');
     $(this).closest('li').addClass('active').siblings().removeClass('active');
-})
+});
 $body.on('click', '.submit-form', function () {
 
-    var parseDates = function (citations) {
-        _.each(citations, function (citation, index) {
+    var parseDates = function (data) {
+        _.each(data.citations, function (citation, index) {
             citation.citation_date = moment(citation.citation_date).format('MM/DD/YYYY');
             citation.court_date = moment(citation.court_date).format('MM/DD/YYYY');
             citation.date_of_birth = moment(citation.date_of_birth).format('MM/DD/YYYY');

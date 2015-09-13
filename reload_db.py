@@ -1,9 +1,9 @@
 import os, sys
 import csv
 
-#os.system("rm db.sqlite3") #Kill existing db
-#os.system("rm -rf api/migrations/") #kill existing db definitions
-#os.system("python manage.py migrate") #Create new db
+os.system("rm db.sqlite3") #Kill existing db
+os.system("rm -rf api/migrations/") #kill existing db definitions
+os.system("python manage.py migrate") #Create new db
 
 sys.path.append("hackathon/")
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'

@@ -15,6 +15,9 @@ def json_custom_parser(obj):
 
 def contact_received(request):
 
+    #from django.contrib.auth import logout
+    #logout(request)
+
     try:
         if 'citation_number' not in request.session and 'drivers_license' not in request.session:
             
@@ -134,10 +137,15 @@ def contact_received(request):
         else:
             sms_from_user = request.POST['Body']
             
-            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(request.session['dob'])).filter(last_name__iexact=sms_from_user)
+            print "sb1"
+            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number'])
+            print "sb2"
             violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
+            print "sb3"
             citation_obj = list(citation_in_db.values())[0]
+            print "sb4"
             citation_obj['violations'] = list(violations_in_db.values())
+            print "sb5"
             total_owed = float(0)
             has_warrant = False
             for v in violations_in_db:
@@ -145,32 +153,35 @@ def contact_received(request):
                 total_owed += float(v.court_cost.strip('$').strip()) if v.court_cost.strip('$').strip() else 0
                 if v.warrant_status:
                     has_warrant = True
+            print "sb6"
             citation_obj['total_owed'] = total_owed
             citation_obj['has_warrant'] = has_warrant
             #ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + " / Court Location: " + str(citation_in_db[0].court_location) + " / Court Address: " + str(citation_in_db[0].court_address)
             
+            print "sb7"
             twil = '''<?xml version="1.0" encoding="UTF-8"?>
                     <Response>'''
             if sms_from_user == '1':
                 #break down in violations
                 for v in violations_in_db:
                     twil += '<Message> {violation_info}</Message>'
-                    violation_info = "Violation Description: " + str(v.violation_description) + "Fine Amount: $" + str(v.fine_amount) + "Court Cost: $" + str(v.court_cost) 
+                    violation_info = "Violation Description: " + str(v.violation_description) + "\n" + "Fine Amount: $" + str(v.fine_amount) + "\n" + "Court Cost: $" + str(v.court_cost) 
                     twil = twil.replace('{violation_info}',violation_info)
                     
             elif sms_from_user == '2':
                 #citation information
                 twil += '<Message>{citation_info}</Message>'
-                citation_info = "Citation Number: " + str(citation_obj['citation_number']) + "Citation Date: " + str(citation_obj['citation_date'])
-                twil.replace = twil.replace('{citation_info}',citation_info)
+                citation_info = "Citation Number: " + str(citation_obj['citation_number']) +  "\n" + "Citation Date: " + str(citation_obj['citation_date'])
+                twil = twil.replace('{citation_info}',citation_info)
                 
             elif sms_from_user == '3':
                 #ticket payment
                 twil += "<Message>Fix this one</Message>"    
-                    
-            
-            twil += """<Message>Send 1 to access a breakdown in your violations; send 2 to access citation information; send 3 to pay your ticket fee.</Message>
-                    </Response>"""
+                        
+
+            twil += """
+                    </Response>
+                   """
             return HttpResponse(twil, content_type='application/xml', status=200)
             
     except:
@@ -388,9 +399,10 @@ def get_info(request):
 
     if citation_in_db.exists():
         all_cites = []
+        i = 0
         for c in citation_in_db:
             violations_in_db = Violation.objects.filter(citation_number=c.citation_number)
-            citation_obj = list(citation_in_db.values())[0]
+            citation_obj = list(citation_in_db.values())[i]
             citation_obj['violations'] = list(violations_in_db.values())
             total_owed = float(0)
             has_warrant = False
@@ -402,6 +414,7 @@ def get_info(request):
             citation_obj['total_owed'] = total_owed
             citation_obj['has_warrant'] = has_warrant
             all_cites.append(citation_obj)
+            i += 1
 
         return HttpResponse(json.dumps({
             "status": "success",
