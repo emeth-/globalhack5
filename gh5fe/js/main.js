@@ -8,7 +8,20 @@ $body.on('click', '.citation-no', function () {
     var mainContent = _.template($('#yes-form').html());
     $('.main-content').html(mainContent({yesOrNo: false}));
 });
+$body.on('click', '.look-up', function () {
+    var mainContent = _.template($('#look-up').html());
+    $('.main-content').html(mainContent({}));
+});
 $body.on('click', '.submit-form', function () {
+
+    var parseDates = function (citation) {
+        citation.citation_date = moment(citation.citation_date).format('MM/DD/YYYY');
+        citation.court_date = moment(citation.court_date).format('MM/DD/YYYY');
+        citation.date_of_birth = moment(citation.date_of_birth).format('MM/DD/YYYY');
+        _.each(citation.violations, function (value, index) {
+            
+        });
+    };
 
     $('.server-error').remove();
 
@@ -27,6 +40,7 @@ $body.on('click', '.submit-form', function () {
             drivers_license_number: driversLicense
         },
         success: function (response, status, xhr) {
+
             if (response.status === 'error') {
                 var mainContent = _.template($('#no-citations').html());
                 $('.main-content').prepend(mainContent({message: response.message}));
