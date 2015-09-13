@@ -422,13 +422,17 @@ def contact_received_voice(request):
 def get_info(request):
 
     if request.GET.get('important_number', False) and request.GET.get('last_name', False) and request.GET.get('date_of_birth', False):
-
-        citation_number = -1
         try:
-            citation_number = int(request.GET['important_number'])
+            fake_citation_number = int(request.GET['important_number'])
         except:
-            pass
-        citation_in_db = Citation.objects.filter(Q(citation_number=citation_number) | Q(drivers_license_number=request.GET['important_number']))
+            fake_citation_number = 0
+        citation_in_db = Citation.objects.filter(Q(citation_number=fake_citation_number) | Q(drivers_license_number=request.GET['important_number']))
+        if not citation_in_db.exists():
+            #return error, not found
+            return HttpResponse(json.dumps({
+                "status": "error",
+                "message": "Citation not found in database."
+            }, default=json_custom_parser), content_type='application/json', status=200)
 
     else:
 
