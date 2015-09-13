@@ -259,7 +259,7 @@ def contact_received_voice(request):
     
             sms_from_user = request.GET['Digits']
     
-            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(request.session['dob'])).filter(last_name__iexact=sms_from_user)
+            citation_in_db = Citation.objects.filter(citation_number=request.session['citation_number']).filter(date_of_birth=parser.parse(request.session['dob'])).filter(last_name_phone=sms_from_user)
     
             if not citation_in_db.exists():
     
