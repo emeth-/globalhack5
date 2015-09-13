@@ -91,12 +91,18 @@
         <ul class="list-group">
             
             
-            <li class="list-group-item">
-                <a href="http://www.modot.org/othertransportation/waterways/waterwaysferrylistings.htm"><p><strong>Alternative Forms of Payment</strong></p></a>
+            <li class="list-group-item + alternatepayments">
+                <p><a href="javascript: void 0;"<strong>Alternative Forms of Payment</strong></a></p>
                 <span>Alternative forms of payment may include community service or payment plans.</span>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
+        </ul>
 </script>
+
+<script type="foo/bar" id='alternatepayments'>
+    <p>This is a survey.</p>
+</script>
+
 <script type="foo/bar" id='list-citations'>
 
         <% if (_.where(citations, function (c) {has_warrant: true}).length) { %>
