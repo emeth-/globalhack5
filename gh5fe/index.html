@@ -34,28 +34,34 @@
 </nav>
 <div class="container ">
     <div class="main-content">
-        <h1>Do you have your citation number?</h1>
-        <button class="btn btn-success btn-block citation-yes">Yes</button>
-        <button class="btn btn-danger btn-block citation-no">No</button>
+        <div class="form">
+            <label for="">Driver's License #</label>
+            <input type="text" class="important-number form-control"/>
+            <label for="">Last Name</label>
+            <input type="text" class="last-name form-control"/>
+            <label for="">Date Of Birth</label>
+            <input type="text" class="date-of-birth form-control"/>
+            <button class="btn btn-success btn-lg btn-block submit-form">SUBMIT</button>
+        </div>
     </div>
 </div><!-- /.container -->
 <script type="foo/bar" id='resources'>
         <h4 class="text-center"><strong>RESOURCES</strong></h4>
         <ul class="list-group">
             <li class="list-group-item">
-                <a href="http://www.dmv.org/mo-missouri/traffic-ticket-faq.php">Ticket FAQs</a>
+                <a href="http://www.dmv.org/mo-missouri/traffic-ticket-faq.php"><strong>Ticket FAQs</strong></a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.dmv.org/mo-missouri/paying-traffic-tickets.php">How to Pay Fines</a>
+                <a href="http://www.dmv.org/mo-missouri/paying-traffic-tickets.php"><strong>How to Pay Fines</strong></a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.dmv.org/mo-missouri/fighting-your-traffic-ticket.php">Options for Fighting a Ticket</a>
+                <a href="http://www.dmv.org/mo-missouri/fighting-your-traffic-ticket.php"><strong>Options for Fighting a Ticket</strong></a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
             <li class="list-group-item">
-                <a href="http://www.dmv.org/mo-missouri/traffic-ticket-attorneys.php">Attorney Info</a>
+                <a href="http://www.dmv.org/mo-missouri/traffic-ticket-attorneys.php"><strong>Attorney Info</strong></a>
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </li>
         </ul>
@@ -110,7 +116,7 @@
             <div class="push"></div>
         <% } %>
         <% _.each(citations, function(citation) { %>
-            <div class="citation">
+            <div class="list-group-item citation">
                 <p>
                     <strong class="blue">Citation #: </strong>
                     <span><%= citation.citation_number %></span>
@@ -135,7 +141,7 @@
                 </div>
                 <p><strong>Driver's License: </strong><%= citation.drivers_license_number %></p>
 
-                <h5 class="text-danger">VIOLATIONS</h5>
+                <h5 class="text-danger">Violations</h5>
                 <ol>
                 <% _.each(citation.violations, function(violation) { %>
                     <li <% if (violation.status === 'CLOSED' ) { %>class="closed"<% } %>>
@@ -164,20 +170,10 @@
         <% }); %>
 </script>
 
-<script type="foo/bar" id='look-up'>
-    <h1>Do you have your citation number?</h1>
-    <button class="btn btn-success btn-block citation-yes">Yes</button>
-    <button class="btn btn-danger btn-block citation-no">No</button>
-</script>
-<script type="foo/bar" id='yes-form'>
+<script type="foo/bar" id='form'>
     <div class="form">
-        <% if (yesOrNo) { %>
-        <label for="">Citation #</label>
-        <input type="text" class="citation-number form-control"/>
-        <% } %>
-
         <label for="">Driver's License #</label>
-        <input type="text" class="drivers-license form-control"/>
+        <input type="text" class="important-number form-control"/>
         <label for="">Last Name</label>
         <input type="text" class="last-name form-control"/>
         <label for="">Date Of Birth</label>
