@@ -115,7 +115,7 @@ def contact_received(request):
                         <Response>
                             <Message method="GET">Thank you, that matches our records. Here is your ticket info!</Message>
                             <Message method="GET">{ticket_info}</Message>
-                            <Message>For a list of violations, send 1. \nFor Citation information, send 2. \nFor options on how to pay outstanding fines, send 3.</Message>
+                            <Message>For a list of violations, send 1. \nFor citation information, send 2. \nFor options on how to pay outstanding fines, send 3.</Message>
                         </Response>
                         '''
                 violations_in_db = Violation.objects.filter(citation_number=request.session['citation_number'])
@@ -130,7 +130,7 @@ def contact_received(request):
                         has_warrant = True
                 citation_obj['total_owed'] = total_owed
                 citation_obj['has_warrant'] = has_warrant
-                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + "\n" + "Court Location: " + str(citation_in_db[0].court_location) + "\n" + "Court Address: " + str(citation_in_db[0].court_address) + "\n" + "Total Amount Owed: $" + str(citation_obj['total_owed']) + "\n" + "Outstanding Warrant: " + str(citation_obj['has_warrant'])
+                ticket_info = "Court Date: " + str(citation_in_db[0].court_date) + "\n\n" + "Court Location: " + str(citation_in_db[0].court_location) + "\n\n" + "Court Address: " + str(citation_in_db[0].court_address) + "\n\n" + "Total Amount Owed: $" + str(citation_obj['total_owed']) + "\n\n" + "Outstanding Warrant: " + str(citation_obj['has_warrant'])
                 twil = twil.replace("{ticket_info}", ticket_info)
                 return HttpResponse(twil, content_type='application/xml', status=200)
             
@@ -158,19 +158,21 @@ def contact_received(request):
                 #break down in violations
                 for v in violations_in_db:
                     twil += '<Message> {violation_info}</Message>'
-                    violation_info = "Violation Description: " + str(v.violation_description) + "\n" + "Fine Amount: $" + str(v.fine_amount) + "\n" + "Court Cost: $" + str(v.court_cost) 
+                    violation_info = "Violation Description: " + str(v.violation_description) + "\n\n" + "Fine Amount: $" + str(v.fine_amount) + "\n\n" + "Court Cost: $" + str(v.court_cost) 
                     twil = twil.replace('{violation_info}',violation_info)
                     
             elif sms_from_user == '2':
                 #citation information
                 twil += '<Message>{citation_info}</Message>'
-                citation_info = "Citation Number: " + str(citation_obj['citation_number']) +  "\n" + "Citation Date: " + str(citation_obj['citation_date'])
+                citation_info = "Citation Number: " + str(citation_obj['citation_number']) +  "\n\n" + "Citation Date: " + str(citation_obj['citation_date'])
                 twil = twil.replace('{citation_info}',citation_info)
                 
             elif sms_from_user == '3':
                 #ticket payment
-                twil += "<Message>Pay by phone: \n(877) 866-3926. \nPay in person: \nMissouri Fine Collection Center \nP.O. Box 104540 \nJefferson City, MO 65110</Message>"    
-                        
+                twil += "<Message>Pay by phone: \n(877) 866-3926. \n\nPay in person: \nMissouri Fine Collection Center \nP.O. Box 104540 \nJefferson City, MO 65110</Message>"    
+                      
+            #else:
+            #    twil += "<Message>You have entered an invalid option.</Message>"
 
             twil += """
                     </Response>
